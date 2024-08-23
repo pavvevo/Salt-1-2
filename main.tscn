@@ -1,21 +1,48 @@
-[gd_scene load_steps=2 format=3 uid="uid://cmyg27ndgedvt"]
+[gd_scene load_steps=8 format=3 uid="uid://cmyg27ndgedvt"]
 
-[sub_resource type="SphereMesh" id="SphereMesh_cek62"]
+[ext_resource type="Texture2D" uid="uid://dg7bkoroeygmk" path="res://assets/hdris/kloofendal_48d_partly_cloudy_puresky_2k.hdr" id="1_xol8l"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6bh5u"]
+albedo_color = Color(0.490303, 0.364579, 0.248753, 1)
+
+[sub_resource type="QuadMesh" id="QuadMesh_1t5yh"]
+material = SubResource("StandardMaterial3D_6bh5u")
+
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_ep5vr"]
+panorama = ExtResource("1_xol8l")
+
+[sub_resource type="Sky" id="Sky_b7bi8"]
+sky_material = SubResource("PanoramaSkyMaterial_ep5vr")
+
+[sub_resource type="Environment" id="Environment_bmbu2"]
+background_mode = 2
+sky = SubResource("Sky_b7bi8")
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_8na7v"]
 
 [node name="Main" type="Node3D"]
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.740353, 0, 0)
-mesh = SubResource("SphereMesh_cek62")
+[node name="world" type="Node3D" parent="."]
 
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
-transform = Transform3D(0.298868, 0, 0, 0, 3.50831, -0.0686424, 0, 0.348568, 0.69088, 1.99156, 1.48822, 0.0702014)
-mesh = SubResource("SphereMesh_cek62")
+[node name="MeshInstance3D" type="MeshInstance3D" parent="world"]
+transform = Transform3D(16.5019, 0, 0, 0, -5.81378e-07, 1, 0, -13.3004, -4.37114e-08, 0, 0, 0)
+mesh = SubResource("QuadMesh_1t5yh")
 
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="MeshInstance3D2"]
-transform = Transform3D(0.298868, 0, 0, 0, 3.50831, -0.0686424, 0, 0.348568, 0.69088, 1.99156, 1.48822, 0.0702014)
-mesh = SubResource("SphereMesh_cek62")
+[node name="env" type="Node3D" parent="."]
 
-[node name="MeshInstance3D3" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 2.15779, 0, 0, 0, 1, -0.424789, 0.846145, 0)
-mesh = SubResource("SphereMesh_cek62")
+[node name="WorldEnvironment" type="WorldEnvironment" parent="env"]
+environment = SubResource("Environment_bmbu2")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="env"]
+transform = Transform3D(1, 0, 0, 0, 0.657914, 0.753093, 0, -0.753093, 0.657914, 0, 8.86488, 7.18723)
+
+[node name="player" type="CharacterBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.20092, 0)
+
+[node name="model" type="Node3D" parent="player"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="player/model"]
+mesh = SubResource("CapsuleMesh_8na7v")
+
+[node name="Camera3D" type="Camera3D" parent="player/model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.554035, 0)
