@@ -1,14 +1,60 @@
-[gd_scene load_steps=12 format=3 uid="uid://cmyg27ndgedvt"]
+[gd_scene load_steps=25 format=3 uid="uid://cmyg27ndgedvt"]
 
-[ext_resource type="Texture2D" uid="uid://batda06q72sef" path="res://assets/textures/dev/grids/Dark/texture_07.png" id="1_sfcji"]
+[ext_resource type="Texture2D" uid="uid://by62y5nfawqdp" path="res://assets/Ground079L_2K-JPG_Color.jpg" id="1_uatjv"]
 [ext_resource type="Texture2D" uid="uid://dg7bkoroeygmk" path="res://assets/hdris/kloofendal_48d_partly_cloudy_puresky_2k.hdr" id="1_xol8l"]
-[ext_resource type="PackedScene" uid="uid://63xitoj7inpa" path="res://world_gen.tscn" id="2_0qdc8"]
+[ext_resource type="Shader" path="res://Water.gdshader" id="2_aqqqa"]
+[ext_resource type="Texture2D" uid="uid://0s5mw4qoofj0" path="res://assets/Ground079L_2K-JPG_AmbientOcclusion.jpg" id="2_bdu6h"]
+[ext_resource type="Texture2D" uid="uid://ccdomgsc3h6cf" path="res://assets/Ground079L_2K-JPG_Displacement.jpg" id="3_bkrcu"]
 [ext_resource type="Script" path="res://scripts/player.gd" id="3_o3hrt"]
-[ext_resource type="Material" uid="uid://ba5ik6r40f1ci" path="res://shaders/WorldMaterial.tres" id="5_i4fou"]
+[ext_resource type="Texture2D" uid="uid://bf0n6ukcmg67" path="res://shaders/bb82af6b027c173c5b0c21cb7064401b.jpg" id="4_114bm"]
+[ext_resource type="Texture2D" uid="uid://yfox6gxcd8rl" path="res://assets/Ground079L_2K-JPG_NormalGL.jpg" id="4_sg8fs"]
+[ext_resource type="Texture2D" uid="uid://ct2nku25lldm" path="res://assets/Ground079L_2K-JPG_Roughness.jpg" id="5_ai22j"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jquw1"]
-albedo_texture = ExtResource("1_sfcji")
+albedo_texture = ExtResource("1_uatjv")
+roughness_texture = ExtResource("5_ai22j")
+normal_enabled = true
+normal_texture = ExtResource("4_sg8fs")
+ao_enabled = true
+ao_texture = ExtResource("2_bdu6h")
+heightmap_enabled = true
+heightmap_texture = ExtResource("3_bkrcu")
 uv1_triplanar = true
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_bm1md"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_r6e3g"]
+noise = SubResource("FastNoiseLite_bm1md")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_fedc5"]
+render_priority = 0
+shader = ExtResource("2_aqqqa")
+shader_parameter/albedo = Color(0, 0.329, 100, 1)
+shader_parameter/albedo2 = Color(0, 0.843137, 1, 1)
+shader_parameter/metallic = 0.0
+shader_parameter/roughness = 0.02
+shader_parameter/wave_direction = Vector2(2, 0)
+shader_parameter/wave_direction2 = Vector2(0, 1)
+shader_parameter/time_scale = 0.025
+shader_parameter/noise_scale = 10.0
+shader_parameter/height_scale = 1.0
+shader_parameter/color_deep = Color(0.101058, 0, 0.622557, 1)
+shader_parameter/color_shallow = Color(5.58317e-06, 0.796019, 0.956657, 1)
+shader_parameter/beers_law = 2.0
+shader_parameter/depth_offset = -0.75
+shader_parameter/edge_scale = 1.06
+shader_parameter/near = 1.0
+shader_parameter/far = 100.0
+shader_parameter/edge_color = Color(1, 1, 1, 1)
+shader_parameter/wave = SubResource("NoiseTexture2D_r6e3g")
+shader_parameter/texture_normal = ExtResource("4_114bm")
+shader_parameter/texture_normal2 = ExtResource("4_114bm")
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_2dhw1"]
+material = SubResource("ShaderMaterial_fedc5")
+size = Vector2(200, 200)
+subdivide_width = 100
+subdivide_depth = 100
 
 [sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_o7te1"]
 panorama = ExtResource("1_xol8l")
@@ -19,22 +65,89 @@ sky_material = SubResource("PanoramaSkyMaterial_o7te1")
 [sub_resource type="Environment" id="Environment_yyphr"]
 background_mode = 2
 sky = SubResource("Sky_nubc2")
+tonemap_mode = 3
+ssao_enabled = true
+glow_enabled = true
+glow_normalized = true
+fog_light_color = Color(0.05641, 0.585802, 0.859316, 1)
+fog_density = 0.02
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_0ggm0"]
 height = 1.66171
 
+[sub_resource type="Shader" id="Shader_0yrou"]
+code = "shader_type spatial;
+
+uniform sampler2D noiseTex;
+uniform sampler2D gradientTex;
+uniform float max_height = 10.0;
+
+varying float height;
+
+void vertex() {
+	height = VERTEX.y;
+}
+
+void fragment() {
+	
+	vec3 color = vec3(height / max_height);
+	
+	ALBEDO = color;
+}
+
+//void light() {
+	// Called for every pixel for every light affecting the material.
+	// Uncomment to replace the default light processing function with this one.
+//}
+"
+
+[sub_resource type="Gradient" id="Gradient_wv7n6"]
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_mrik3"]
+gradient = SubResource("Gradient_wv7n6")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_txvhg"]
+render_priority = 0
+shader = SubResource("Shader_0yrou")
+shader_parameter/max_height = 10.0
+shader_parameter/gradientTex = SubResource("GradientTexture2D_mrik3")
+
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_31lx3"]
-material = ExtResource("5_i4fou")
+material = SubResource("ShaderMaterial_txvhg")
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_2a53p"]
 
 [node name="Main" type="Node3D"]
 
 [node name="world" type="Node3D" parent="."]
 
-[node name="CSGBox3D" type="CSGBox3D" parent="world"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.742357, 0)
+[node name="CSGBox3D3" type="CSGBox3D" parent="world"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0310061, 20.8719)
 use_collision = true
-size = Vector3(20, 0.937988, 20)
+size = Vector3(20, 3, 23.03)
 material = SubResource("StandardMaterial3D_jquw1")
+
+[node name="CSGBox3D4" type="CSGBox3D" parent="world"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0310061, -24)
+use_collision = true
+size = Vector3(20, 3, 20)
+material = SubResource("StandardMaterial3D_jquw1")
+
+[node name="CSGBox3D5" type="CSGBox3D" parent="world"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0310061, -2)
+use_collision = true
+size = Vector3(20, 3, 20)
+material = SubResource("StandardMaterial3D_jquw1")
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="world"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -37, -10, -25.5)
+use_collision = true
+size = Vector3(802, 0.937988, 563)
+material = SubResource("StandardMaterial3D_jquw1")
+
+[node name="Water" type="MeshInstance3D" parent="world"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+mesh = SubResource("PlaneMesh_2dhw1")
 
 [node name="env" type="Node3D" parent="."]
 
@@ -44,7 +157,7 @@ environment = SubResource("Environment_yyphr")
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="env"]
 
 [node name="CharacterBody3D" type="CharacterBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 17.4587, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.45873, 0)
 script = ExtResource("3_o3hrt")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterBody3D"]
@@ -56,9 +169,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.41429, 0)
 
 [node name="Camera3D" type="Camera3D" parent="CharacterBody3D/head"]
 
-[node name="WorldGen" parent="." instance=ExtResource("2_0qdc8")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.67196, -3.37744, -54.711)
-
 [node name="Test" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 38, 0)
 mesh = SubResource("CapsuleMesh_31lx3")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.0473, 0)
+mesh = SubResource("CapsuleMesh_2a53p")
