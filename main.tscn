@@ -13,5 +13,5 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00708276, 0, 0)
 mesh = SubResource("SphereMesh_cek62")
 
 [node name="MeshInstance3D3" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 2.15779, 0, 0, 0, 1, -0.424789, 0.846145, 0)
+transform = Transform3D(1, 0, 0, 0, 2.15779, 0, 0, 0, 1, -0.370919, 0.846145, 0)
 mesh = SubResource("SphereMesh_cek62")
