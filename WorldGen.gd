@@ -1,6 +1,6 @@
 extends Node3D
 
-var shader = preload("res://World.gdshader")
+var shader = preload("res://shaders/WorldMaterial.tres")
 
 func _ready():
 	var noise = FastNoiseLite.new()

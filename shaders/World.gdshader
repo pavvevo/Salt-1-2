@@ -1,13 +1,18 @@
 shader_type spatial;
 
+uniform sampler2D gradientTex;
+
 varying float height;
 
 void vertex() {
-
+	height = VERTEX.y;
 }
 
 void fragment() {
-	ALBEDO = vec3(0.0);
+	
+	vec3 color = texture(gradientTex, vec2(height/10.0)).rgb;
+	
+	ALBEDO = color;
 }
 
 //void light() {
