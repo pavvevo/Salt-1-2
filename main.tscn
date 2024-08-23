@@ -9,7 +9,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.740353, 0, 0)
 mesh = SubResource("SphereMesh_cek62")
 
 [node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00708276, 0, 0)
+transform = Transform3D(0.298868, 0, 0, 0, 3.50831, -0.0686424, 0, 0.348568, 0.69088, 1.99156, 1.48822, 0.0702014)
+mesh = SubResource("SphereMesh_cek62")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="MeshInstance3D2"]
+transform = Transform3D(0.298868, 0, 0, 0, 3.50831, -0.0686424, 0, 0.348568, 0.69088, 1.99156, 1.48822, 0.0702014)
 mesh = SubResource("SphereMesh_cek62")
 
 [node name="MeshInstance3D3" type="MeshInstance3D" parent="."]
