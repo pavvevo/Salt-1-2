@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://63xitoj7inpa"]
+
+[ext_resource type="Script" path="res://WorldGen.gd" id="1_bbkd1"]
+
+[node name="WorldGen" type="StaticBody3D"]
+script = ExtResource("1_bbkd1")
