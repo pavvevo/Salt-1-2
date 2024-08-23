@@ -1,21 +1,11 @@
 [gd_scene load_steps=2 format=3 uid="uid://cmyg27ndgedvt"]
 
-[sub_resource type="SphereMesh" id="SphereMesh_cek62"]
+[ext_resource type="Script" path="res://WorldMesh.gd" id="1_27g3u"]
 
 [node name="Main" type="Node3D"]
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.740353, 0, 0)
-mesh = SubResource("SphereMesh_cek62")
+[node name="WorldMesh" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.779248, 0, 0)
+script = ExtResource("1_27g3u")
 
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
-transform = Transform3D(0.298868, 0, 0, 0, 3.50831, -0.0686424, 0, 0.348568, 0.69088, 1.99156, 1.48822, 0.0702014)
-mesh = SubResource("SphereMesh_cek62")
-
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="MeshInstance3D2"]
-transform = Transform3D(0.298868, 0, 0, 0, 3.50831, -0.0686424, 0, 0.348568, 0.69088, 1.99156, 1.48822, 0.0702014)
-mesh = SubResource("SphereMesh_cek62")
-
-[node name="MeshInstance3D3" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 2.15779, 0, 0, 0, 1, -0.370919, 0.846145, 0)
-mesh = SubResource("SphereMesh_cek62")
+[node name="MeshInstance3D" type="MeshInstance3D" parent="WorldMesh"]
