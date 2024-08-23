@@ -1,14 +1,13 @@
 shader_type spatial;
-render_mode cull_disabled;
 
-uniform sampler2D noiseTex;
+varying float height;
 
 void vertex() {
+
 }
 
 void fragment() {
-	float noise = texture(noiseTex, UV).r;
-	ALBEDO = vec3(noise);
+	ALBEDO = vec3(0.0);
 }
 
 //void light() {

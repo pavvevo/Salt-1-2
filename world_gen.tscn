@@ -2,5 +2,5 @@
 
 [ext_resource type="Script" path="res://WorldGen.gd" id="1_bbkd1"]
 
-[node name="WorldGen" type="StaticBody3D"]
+[node name="WorldGen" type="Node3D"]
 script = ExtResource("1_bbkd1")

@@ -1,8 +1,10 @@
-[gd_scene load_steps=9 format=3 uid="uid://cmyg27ndgedvt"]
+[gd_scene load_steps=13 format=3 uid="uid://cmyg27ndgedvt"]
 
 [ext_resource type="Texture2D" uid="uid://batda06q72sef" path="res://assets/textures/dev/grids/Dark/texture_07.png" id="1_sfcji"]
 [ext_resource type="Texture2D" uid="uid://dg7bkoroeygmk" path="res://assets/hdris/kloofendal_48d_partly_cloudy_puresky_2k.hdr" id="1_xol8l"]
+[ext_resource type="PackedScene" uid="uid://63xitoj7inpa" path="res://world_gen.tscn" id="2_0qdc8"]
 [ext_resource type="Script" path="res://scripts/player.gd" id="3_o3hrt"]
+[ext_resource type="Shader" path="res://World.gdshader" id="5_j284q"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jquw1"]
 albedo_texture = ExtResource("1_sfcji")
@@ -20,6 +22,13 @@ sky = SubResource("Sky_nubc2")
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_0ggm0"]
 height = 1.66171
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_txvhg"]
+render_priority = 0
+shader = ExtResource("5_j284q")
+
+[sub_resource type="TorusMesh" id="TorusMesh_0yvf2"]
+material = SubResource("ShaderMaterial_txvhg")
 
 [node name="Main" type="Node3D"]
 
@@ -50,3 +59,10 @@ shape = SubResource("CapsuleShape3D_0ggm0")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.41429, 0)
 
 [node name="Camera3D" type="Camera3D" parent="CharacterBody3D/head"]
+
+[node name="WorldGen" parent="." instance=ExtResource("2_0qdc8")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.67196, -3.37744, -54.711)
+
+[node name="Test" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 12.9832, 0)
+mesh = SubResource("TorusMesh_0yvf2")
