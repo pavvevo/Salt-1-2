@@ -1,12 +1,45 @@
-[gd_scene load_steps=2 format=3 uid="uid://cmyg27ndgedvt"]
+[gd_scene load_steps=8 format=3 uid="uid://cmyg27ndgedvt"]
 
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_7xh3u"]
+[ext_resource type="Texture2D" uid="uid://dg7bkoroeygmk" path="res://assets/hdris/kloofendal_48d_partly_cloudy_puresky_2k.hdr" id="1_xol8l"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6nkf0"]
+albedo_color = Color(0.468592, 0.340646, 0.225892, 1)
+
+[sub_resource type="QuadMesh" id="QuadMesh_hqy0k"]
+material = SubResource("StandardMaterial3D_6nkf0")
+
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_o7te1"]
+panorama = ExtResource("1_xol8l")
+
+[sub_resource type="Sky" id="Sky_nubc2"]
+sky_material = SubResource("PanoramaSkyMaterial_o7te1")
+
+[sub_resource type="Environment" id="Environment_yyphr"]
+background_mode = 2
+sky = SubResource("Sky_nubc2")
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_t4yph"]
 
 [node name="Main" type="Node3D"]
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.04265, 0)
+[node name="world" type="Node3D" parent="."]
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.27077, 0, 0)
-mesh = SubResource("CapsuleMesh_7xh3u")
+[node name="MeshInstance3D" type="MeshInstance3D" parent="world"]
+transform = Transform3D(10.9754, 0, 0, 0, -5.7455e-07, 1, 0, -13.1442, -4.37114e-08, 0, 0, 0)
+mesh = SubResource("QuadMesh_hqy0k")
+
+[node name="env" type="Node3D" parent="."]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="env"]
+environment = SubResource("Environment_yyphr")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="env"]
+
+[node name="CharacterBody3D" type="CharacterBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.45873, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="CharacterBody3D"]
+mesh = SubResource("CapsuleMesh_t4yph")
+
+[node name="Camera3D" type="Camera3D" parent="CharacterBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.583122, 0)
