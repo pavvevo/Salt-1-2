@@ -1,3 +1,17 @@
-[gd_scene format=3 uid="uid://cmyg27ndgedvt"]
+[gd_scene load_steps=2 format=3 uid="uid://cmyg27ndgedvt"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_cek62"]
 
 [node name="Main" type="Node3D"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.740353, 0, 0)
+mesh = SubResource("SphereMesh_cek62")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00708276, 0, 0)
+mesh = SubResource("SphereMesh_cek62")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 2.15779, 0, 0, 0, 1, -0.424789, 0.846145, 0)
+mesh = SubResource("SphereMesh_cek62")
