@@ -1,11 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://cmyg27ndgedvt"]
-
-[ext_resource type="Script" path="res://WorldMesh.gd" id="1_27g3u"]
+[gd_scene format=3 uid="uid://cmyg27ndgedvt"]
 
 [node name="Main" type="Node3D"]
 
-[node name="WorldMesh" type="StaticBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.779248, 0, 0)
-script = ExtResource("1_27g3u")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="WorldMesh"]
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.04265, 0)
