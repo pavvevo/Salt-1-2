@@ -185,7 +185,6 @@ func _physics_process(delta):
 		
 	
 	# Add the gravity.
-	
 	last_velocity = velocity
 	
 	if not is_on_floor():
