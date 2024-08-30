@@ -1,20 +1,18 @@
 shader_type spatial;
-render_mode cull_disabled;
-render_mode shadows_disabled;
 
-uniform vec3 albedo : source_color;
-uniform vec3 fresnelColor : source_color;
+uniform vec3 albedo : source_color = vec3(1.0, 1.0, 1.0);
+uniform vec3 fresnelColor : source_color = vec3(1.0, 1.0, 1.0);
 
-uniform vec3 deepColor : source_color;
-uniform vec3 shallowColor : source_color;
+uniform vec3 deepColor : source_color = vec3(1.0, 1.0, 1.0);
+uniform vec3 shallowColor : source_color = vec3(1.0, 1.0, 1.0);
 uniform float beers_law = 2.0;
 uniform float depth_offset = -0.75;
 
 uniform float speed : hint_range(0.0, .5, 0.05);
 uniform vec2 waveDirecton = vec2(1.5, 0.5);
 uniform vec2 waveDirectionTwo = vec2(-0.5, 1.0);
-uniform float waveHeight = .4;
-uniform float waveScale = 10.;
+uniform float waveHeight = 1.0;
+uniform float waveScale = 1.;
 uniform float waveNormalScale = .4;
 
 uniform sampler2D normalTex;
@@ -25,7 +23,7 @@ uniform sampler2D SCREEN_TEXTURE : hint_screen_texture, filter_linear_mipmap;
 uniform float edge_scale = .5;
 const float near = 1.0;
 const float far = 100.0;
-uniform vec3 edge_color : source_color;
+uniform vec3 edge_color : source_color = vec3(1.0, 1.0, 1.0);
 
 varying vec3 world_pos;
 varying float height;
@@ -41,7 +39,8 @@ float edge(float depth){
 
 void vertex() {
 	world_pos = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
-	height = texture(waveTex, world_pos.xz * waveScale + TIME * speed * 2.0).r;
+	//world_pos = VERTEX;
+	height = texture(waveTex, world_pos.xz * waveScale + TIME * speed * .1).r;
 	VERTEX.y += height * waveHeight;
 }
 

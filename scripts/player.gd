@@ -1,6 +1,8 @@
 extends CharacterBody3D
 
-@onready var world = get_tree().get_root().get_node("World")
+#@onready var world = get_tree().get_root().get_node("World")
+
+@onready var ocean = $"../Water"
 
 @onready var standing_body = $StandingBody
 @onready var crouching_body = $CrouchingBody
@@ -220,3 +222,7 @@ func _physics_process(delta):
 	else:
 		friction = air_friction
 		onground -= delta
+	
+	if(ocean):	
+		ocean.position.x = position.x
+		ocean.position.z = position.z
