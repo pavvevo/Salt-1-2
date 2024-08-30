@@ -188,3 +188,11 @@ root_node = NodePath("../../../..")
 libraries = {
 "": SubResource("AnimationLibrary_2gxvt")
 }
+
+[node name="ClimbHandCheck" type="RayCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4, 0)
+target_position = Vector3(0, 0, -1.5)
+
+[node name="ClimbWallCheck" type="RayCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+target_position = Vector3(0, 0, -1)

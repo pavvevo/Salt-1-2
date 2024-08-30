@@ -9,6 +9,9 @@ const splash = preload("res://scenes/Splash.tscn")
 @onready var crouching_body = $CrouchingBody
 @onready var head_check = $HeadCheck
 @onready var height_check = $HeightCheck
+@onready var climb_hand_check = $ClimbHandCheck
+@onready var climb_wall_check = $ClimbWallCheck
+
 
 const walk_speed = 7.0
 const run_speed = 10.0
@@ -206,6 +209,12 @@ func _physics_process(delta):
 			
 	if(onground < 0):
 		is_sliding = false
+		
+	#climb
+	if (Input.is_action_pressed("Jump")) and (onground < 0):
+		if climb_hand_check.is_colliding() and !climb_wall_check.is_colliding():
+			velocity.y = jump_power * 0.6
+			camera_animation.play("Jump")
 
 	input_dir = Input.get_vector("Left", "Right", "Forward", "Backwards")
 	var lerp_dir = (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
@@ -219,7 +228,7 @@ func _physics_process(delta):
 	
 	#water
 	if water_exists:
-		if position.y <= water_level:
+		if position.y <= water_level and onground <= -0.2:
 			if !in_water:
 				velocity.y = -2
 				in_water = true
