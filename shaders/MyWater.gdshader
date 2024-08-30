@@ -10,7 +10,7 @@ uniform vec3 shallowColor : source_color = vec3(1.0, 1.0, 1.0);
 uniform float beers_law = 2.0;
 uniform float depth_offset = -0.75;
 
-uniform float speed : hint_range(0.0, .5, 0.05);
+uniform float speed : hint_range(0.0, .5, 0.005);
 uniform vec2 waveDirecton = vec2(1.5, 0.5);
 uniform vec2 waveDirectionTwo = vec2(-0.5, 1.0);
 uniform float waveHeight = 1.0;
@@ -42,7 +42,7 @@ float edge(float depth){
 void vertex() {
 	world_pos = NODE_POSITION_WORLD + VERTEX;
 	height = texture(waveTex, world_pos.xz / modelSize + TIME * speed * .1).r;
-	VERTEX.y += height * waveHeight;
+	VERTEX.y = height * waveHeight;
 }
 
 void fragment() {

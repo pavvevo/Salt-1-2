@@ -1,8 +1,9 @@
 extends CharacterBody3D
 
-#@onready var world = get_tree().get_root().get_node("World")
+@onready var world = get_tree().get_root().get_node("Main")
 
 @onready var ocean = $"../Water"
+const splash = preload("res://scenes/Splash.tscn")
 
 @onready var standing_body = $StandingBody
 @onready var crouching_body = $CrouchingBody
@@ -42,6 +43,12 @@ var sensetivity = 0.2
 var head_height = 1.0
 var free_look_tilt = -8
 var land_timer = 0.0
+
+#water
+var water_level = 0.0
+var water_force = -ProjectSettings.get_setting("physics/3d/default_gravity")
+var in_water = false
+var water_exists = true
 
 #head bob
 var bob_run = 22.0
@@ -97,27 +104,30 @@ func _physics_process(delta):
 
 	#crouching and sliding
 	is_crouching = Input.is_action_pressed("Crouch")
-	if (!is_crouching): is_crouching = head_check.is_colliding() 
-	if (is_sliding): is_crouching = true
+	if !is_crouching: is_crouching = head_check.is_colliding() 
+	if is_sliding: is_crouching = true
 	
 	standing_body.disabled = false
 	crouching_body.disabled = true
+	
+	if in_water:
+		is_crouching = false
 	
 	if is_crouching:
 		standing_body.disabled = true
 		crouching_body.disabled = false
 		
-		if(input_dir != Vector2.ZERO) and (is_on_floor()):
-			if(Input.is_action_just_pressed("Crouch")):
+		if input_dir != Vector2.ZERO and is_on_floor():
+			if Input.is_action_just_pressed("Crouch"):
 				
 				var speed_magnitude = Vector2(velocity.x, velocity.z).length()
 				
-				if(speed_magnitude > run_speed - 2.0) and (speed_magnitude < run_speed + 1.0):
+				if speed_magnitude > run_speed - 2.0 and speed_magnitude < run_speed + 1.0:
 					is_sliding = true
 					slide_timer = slide_timer_max
 					slide_vector = input_dir
 		
-		if(!is_sliding):
+		if !is_sliding:
 			if(is_on_floor()):
 				head_height = -1.0
 				move_speed = crouch_speed
@@ -207,6 +217,20 @@ func _physics_process(delta):
 	velocity.z = move_toward(velocity.z, direction.z * move_speed, delta * friction)
 	
 	last_position = position
+	
+	#water
+	if water_exists:
+		if position.y <= water_level:
+			if !in_water:
+				velocity.y = -2
+				in_water = true
+				var cool_splash = splash.instantiate()
+				world.add_child(cool_splash)
+				cool_splash.position = position - Vector3(0.0, 1.0, 0.0)
+				
+			velocity.y -= water_force * delta * 1.5
+		else:
+			in_water = false
 	
 	move_and_slide()
 

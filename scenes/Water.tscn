@@ -17,6 +17,7 @@ noise = SubResource("FastNoiseLite_7s712")
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_6f3x3"]
 noise_type = 4
+frequency = 0.015
 fractal_type = 2
 fractal_gain = 0.35
 fractal_weighted_strength = 0.6
@@ -30,19 +31,19 @@ noise = SubResource("FastNoiseLite_6f3x3")
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_px4cy"]
 render_priority = 0
 shader = ExtResource("1_lmgls")
-shader_parameter/modelSize = 100.0
+shader_parameter/modelSize = 1000.0
 shader_parameter/albedo = Color(0, 0.527, 0.97, 1)
 shader_parameter/fresnelColor = Color(0.346, 0.857, 1, 1)
 shader_parameter/deepColor = Color(1, 1, 1, 1)
 shader_parameter/shallowColor = Color(1, 1, 1, 1)
 shader_parameter/beers_law = 2.0
 shader_parameter/depth_offset = -0.75
-shader_parameter/speed = 0.1
+shader_parameter/speed = 0.05
 shader_parameter/waveDirecton = Vector2(1.5, 0.5)
 shader_parameter/waveDirectionTwo = Vector2(-0.5, 1)
 shader_parameter/waveHeight = 1.0
 shader_parameter/waveScale = 1.0
-shader_parameter/waveNormalScale = 0.5
+shader_parameter/waveNormalScale = 0.05
 shader_parameter/edge_scale = 0.5
 shader_parameter/edge_color = Color(1, 1, 1, 1)
 shader_parameter/normalTex = SubResource("NoiseTexture2D_b3xb1")
@@ -50,9 +51,9 @@ shader_parameter/waveTex = SubResource("NoiseTexture2D_b0ikp")
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_t4gs7"]
 material = SubResource("ShaderMaterial_px4cy")
-size = Vector2(100, 100)
-subdivide_width = 100
-subdivide_depth = 100
+size = Vector2(500, 500)
+subdivide_width = 500
+subdivide_depth = 500
 
 [sub_resource type="GDScript" id="GDScript_g5xcs"]
 
