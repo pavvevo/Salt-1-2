@@ -1,163 +1,222 @@
 extends CharacterBody3D
 
+@onready var world = get_tree().get_root().get_node("World")
 
-#Player nodes
-@onready var neck = $neck
-@onready var head = $neck/head
-@onready var eyes = $neck/head/eyes
+@onready var standing_body = $StandingBody
+@onready var crouching_body = $CrouchingBody
+@onready var head_check = $HeadCheck
+@onready var height_check = $HeightCheck
 
-@onready var standing_collision_shape = $standing_collision_shape
-@onready var crouching_collision_shape = $crouching_collision_shape
-@onready var ray_cast_3d = $RayCast3D
-@onready var camera_3d = $neck/head/eyes/Camera3D
+const walk_speed = 7.0
+const run_speed = 10.0
+const crouch_speed = 5.0
+var friction = 20
+var ground_friction = 30
+var air_friction = 10
 
-#Speed vars
-var current_speed = 5.0
-
-const walk_speed = 5.0
-const sprint_speed = 8.0
-const crouch_speed = 3.0
-
-#States
-var walking = false
-var sprinting = false
-var crouching = false
-var free_looking = false
-
-#Head bobbing vars
-const head_bobbing_sprinting_speed = 22.0
-const head_bobbing_walking_speed = 14.0
-const head_bobbing_crouching_speed = 10.0
-
-const head_bobbing_sprinting_intensity = 0.15
-const head_bobbing_walking_intensity = 0.1
-const head_bobbing_crouching_intensity = 0.05
-
-var head_bobbing_vector = Vector2.ZERO
-var head_bobbing_index = 0.0
-var head_bobbing_current_intensity = 0.0
-
-#Movement vars
-var crouch_depth = -0.5
-const jump_vel = 4.5
-var lerp_speed = 10.0
-var free_look_tilt_amount = 8
-
-
-
-#Input vars
-var direction = Vector3.ZERO
-const mouse_sens = 0.4
-
-
-# Get the gravity from the project settings to be synced with RigidBody nodes.
+var move_speed = 5.0
+const jump_power = 6
+var lerp_speed = 5.0
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
+var onground = 0
+
+var slide_timer_max = 1.0
+var slide_timer = slide_timer_max
+var slide_vector = Vector2.ZERO
+var slide_speed = 20.0
+
+var direction = Vector3.ZERO
+var input_dir = Vector2.ZERO
+var last_velocity = Vector3.ZERO
+var last_position = Vector3.ZERO
+
+@onready var head = $Neck/Head
+@onready var neck = $Neck
+@onready var camera = $Neck/Head/Eyes/Camera3D
+@onready var eyes = $Neck/Head/Eyes
+@onready var camera_animation = $Neck/Head/Eyes/CameraAnimation
+
+var sensetivity = 0.2
+var head_height = 1.0
+var free_look_tilt = -8
+var land_timer = 0.0
+
+#head bob
+var bob_run = 22.0
+var bob_run_intesity = 0.2
+var bob_crouch = 10.0
+var bob_crouch_intensity = 0.05
+var bob_walk = 15.0
+var bob_walk_intensity = 0.1
+var bob_vector = Vector2.ZERO
+var bob_index = 0.0
+var bob_intensity = 0.0
+
+#states
+var is_running = false
+var is_crouching = false
+var is_free_looking = false
+var is_sliding = false
 
 func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
 func _input(event):
-	
-	#Mouse looking logic
 	if event is InputEventMouseMotion:
-		if free_looking:
-			neck.rotate_y(deg_to_rad(-event.relative.x * mouse_sens))
-			neck.rotation.y = clamp(neck.rotation.y, deg_to_rad(-110), deg_to_rad(110))
+		if is_free_looking:
+			neck.rotate_y(deg_to_rad(event.relative.x * -sensetivity))
+			neck.rotation.y = clamp(neck.rotation.y, deg_to_rad(-120), deg_to_rad(120))
 		else:
-			rotate_y(deg_to_rad(-event.relative.x * mouse_sens))
-			head.rotate_x(deg_to_rad(-event.relative.y * mouse_sens))
-			head.rotation.x = clamp(head.rotation.x,deg_to_rad(-89),deg_to_rad(89))
-		
+			rotate_y(deg_to_rad(event.relative.x * -sensetivity))
+		head.rotate_x(deg_to_rad(event.relative.y * -sensetivity))
+		head.rotation.x = clamp(head.rotation.x, deg_to_rad(-90), deg_to_rad(90))
+
 func _physics_process(delta):
-	#Getting movement input
-	var input_dir = Input.get_vector("left", "right", "forward", "backward")
 	
-	#Handle movement state
-	
-	#Crouching
-	if Input.is_action_pressed("crouch"):
-		current_speed = crouch_speed
+	var look_vector = Input.get_vector("Look Left", "Look Right", "Look Up", "Look Down")
 		
-		head.position.y = lerp(head.position.y, crouch_depth, delta*lerp_speed)
-		
-		standing_collision_shape.disabled = true
-		crouching_collision_shape.disabled = false
-		
-		walking = false
-		sprinting = false
-		crouching = true
-		
-	elif !ray_cast_3d.is_colliding():
-		
-	#Standing
-		standing_collision_shape.disabled = false
-		crouching_collision_shape.disabled = true
-		
-		head.position.y = lerp(head.position.y, 0.0, delta*lerp_speed)
-		
-		if Input.is_action_pressed("sprint"):
-			#Sprinting
-			current_speed = sprint_speed
-			
-			walking = false
-			sprinting = true
-			crouching = false
+	if(look_vector != Vector2.ZERO):
+		if is_free_looking:
+			neck.rotate_y(deg_to_rad(look_vector.x * -sensetivity * 20))
+			neck.rotation.y = clamp(neck.rotation.y, deg_to_rad(-120), deg_to_rad(120))
 		else:
-			#Walking
-			current_speed = walk_speed
-			
-			walking = true
-			sprinting = false
-			crouching = false
+			rotate_y(deg_to_rad(look_vector.x * -sensetivity  * 20))
+		head.rotate_x(deg_to_rad(look_vector.y * -sensetivity  * 20))
+		head.rotation.x = clamp(head.rotation.x, deg_to_rad(-90), deg_to_rad(90))
 	
-	#Handle free look
-	if Input.is_action_pressed("free_look"):
-		free_looking = true
-		camera_3d.rotation.z = -deg_to_rad(neck.rotation.y*free_look_tilt_amount)
-	else:
-		free_looking = false
-		neck.rotation.y = lerp(neck.rotation.y, 0.0, delta*20)
-		camera_3d.rotation.z = lerp(camera_3d.rotation.y, 0.0, delta*lerp_speed)
+	#view_model.rotation.y += (head.rotation.y - view_model.rotation.y) / 0.1 * delta
+	#view_model.rotation.x += (head.rotation.x - view_model.rotation.x) / 0.1 * delta
 	
+	#basic movement
+	move_speed = walk_speed
 	
-	#Head bobbing
-	if sprinting:
-		head_bobbing_current_intensity = head_bobbing_sprinting_intensity
-		head_bobbing_index += head_bobbing_sprinting_speed*delta
-	elif walking:
-		head_bobbing_current_intensity = head_bobbing_walking_intensity
-		head_bobbing_index += head_bobbing_walking_speed*delta
-	elif crouching:
-		head_bobbing_current_intensity = head_bobbing_crouching_intensity
-		head_bobbing_index += head_bobbing_crouching_speed*delta
+	is_running = true #Input.is_action_pressed("Run")
+	if(is_running): move_speed = run_speed
+
+	#crouching and sliding
+	is_crouching = Input.is_action_pressed("Crouch")
+	if (!is_crouching): is_crouching = head_check.is_colliding() 
+	if (is_sliding): is_crouching = true
 	
-	if is_on_floor() && input_dir != Vector2.ZERO:
-		head_bobbing_vector.y = sin(head_bobbing_index)
-		head_bobbing_vector.x = sin(head_bobbing_index/2)+0.5
+	standing_body.disabled = false
+	crouching_body.disabled = true
+	
+	if is_crouching:
+		standing_body.disabled = true
+		crouching_body.disabled = false
 		
-		eyes.position.y = lerp(eyes.position.y, head_bobbing_vector.y*(head_bobbing_current_intensity/2.0), delta*lerp_speed)
-		eyes.position.x = lerp(eyes.position.x, head_bobbing_vector.x*head_bobbing_current_intensity, delta*lerp_speed)
+		if(input_dir != Vector2.ZERO) and (is_on_floor()):
+			if(Input.is_action_just_pressed("Crouch")):
+				
+				var speed_magnitude = Vector2(velocity.x, velocity.z).length()
+				
+				if(speed_magnitude > run_speed - 2.0) and (speed_magnitude < run_speed + 1.0):
+					is_sliding = true
+					slide_timer = slide_timer_max
+					slide_vector = input_dir
 		
+		if(!is_sliding):
+			if(is_on_floor()):
+				head_height = -1.0
+				move_speed = crouch_speed
+			else:
+				head_height = -0.5
+				if(!height_check.is_colliding()):
+					velocity.y -= gravity * delta * 5
 	else:
-		eyes.position.y = lerp(eyes.position.y, 0.0, delta*lerp_speed)
-		eyes.position.x = lerp(eyes.position.x, 0.0, delta*lerp_speed)
+		head_height = 0.0
+		
+	if(is_sliding):
+		head_height = -1.0
+		move_speed = (slide_timer + 0.25) * slide_speed;
+		
+		if(slide_timer <= 0): 
+			is_sliding = false
+			slide_timer = 0.0
+
+	if(slide_timer > 0):
+		slide_timer -= delta
+	
+	head.position.y = lerp(head.position.y, head_height, delta * 5)
+	
+	#free looking
+	is_free_looking = Input.is_action_pressed("Freelook")
+	if(is_sliding): is_free_looking = true
+	if(!is_free_looking): 
+		neck.rotation.y = lerp(neck.rotation.y, 0.0, delta * 10.0)
+		eyes.rotation.z = lerp(eyes.rotation.z, 0.0, delta * 10.0)
+	else:
+		if(is_sliding):
+			eyes.rotation.z = lerp(eyes.rotation.z, deg_to_rad(10.0), delta * 5.0)
+		else:
+			eyes.rotation.z = deg_to_rad(neck.rotation.y * free_look_tilt)
+
+	if is_running:
+		bob_intensity = bob_run_intesity
+		bob_index += bob_run * delta
+	elif is_crouching:
+		bob_intensity = bob_crouch_intensity
+		bob_index += bob_crouch * delta
+	else:
+		bob_intensity = bob_walk_intensity
+		bob_index += bob_walk * delta
+		
+	if is_on_floor() and (!is_sliding) and (input_dir != Vector2.ZERO):
+		bob_vector.y = sin(bob_index)
+		bob_vector.x = sin(bob_index / 2) + 0.5
+		
+		eyes.position.y = lerp(eyes.position.y, bob_vector.y * bob_intensity, 5 * delta)
+		eyes.position.x = lerp(eyes.position.x, bob_vector.x * bob_intensity, 5 * delta)
+	else:
+		eyes.position.y = lerp(eyes.position.y, 0.0, 5 * delta)
+		eyes.position.x = lerp(eyes.position.x, 0.0, 5 * delta)
+		
 	
 	# Add the gravity.
+	
+	last_velocity = velocity
+	
 	if not is_on_floor():
 		velocity.y -= gravity * delta
 
 	# Handle jump.
-	if Input.is_action_just_pressed("ui_accept") and is_on_floor():
-		velocity.y = jump_vel
+	if (Input.is_action_just_pressed("Jump")) and (onground > 0):
+		onground = 0.0
+		velocity.y = jump_power
+		camera_animation.play("Jump")
+		
+		velocity.x += direction.x * move_speed * 0.25
+		velocity.z += direction.z * move_speed * 0.25
+		
+		if(is_sliding):
+			is_sliding = false
+			velocity.x = direction.x * slide_speed
+			velocity.z = direction.z * slide_speed
+			
+	if(onground < 0):
+		is_sliding = false
 
-	# Get the input direction and handle the movement/deceleration.
-	# As good practice, you should replace UI actions with custom gameplay actions.
-	direction = lerp(direction,(transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized(),delta*lerp_speed)
-	if direction:
-		velocity.x = direction.x * current_speed
-		velocity.z = direction.z * current_speed
-	else:
-		velocity.x = move_toward(velocity.x, 0, current_speed)
-		velocity.z = move_toward(velocity.z, 0, current_speed)
-
+	input_dir = Input.get_vector("Left", "Right", "Forward", "Backwards")
+	var lerp_dir = (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
+	direction = lerp(direction, lerp_dir, delta * lerp_speed)
+	if(is_sliding): direction = (transform.basis * Vector3(slide_vector.x, 0, slide_vector.y)).normalized()
+	
+	velocity.x = move_toward(velocity.x, direction.x * move_speed, delta * friction)
+	velocity.z = move_toward(velocity.z, direction.z * move_speed, delta * friction)
+	
+	last_position = position
+	
 	move_and_slide()
+
+	if is_on_floor():
+		friction = ground_friction
+		if(onground <= 0): 
+			if(last_velocity.y < -18.0):
+				camera_animation.play("Big Land")
+			else:
+				camera_animation.play("Land")
+			
+		onground = 0.2
+	else:
+		friction = air_friction
+		onground -= delta
