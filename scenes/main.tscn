@@ -76,6 +76,5 @@ shadow_enabled = true
 [node name="Player" parent="." instance=ExtResource("7_0lso8")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, 4.9122, 0)
 
-[node name="Water" parent="." node_paths=PackedStringArray("follow") instance=ExtResource("8_k4i2f")]
+[node name="Water" parent="." instance=ExtResource("8_k4i2f")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 1.3174)
-follow = NodePath("../Player")

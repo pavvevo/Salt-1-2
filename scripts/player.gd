@@ -226,3 +226,4 @@ func _physics_process(delta):
 	if(ocean):	
 		ocean.position.x = position.x
 		ocean.position.z = position.z
+		

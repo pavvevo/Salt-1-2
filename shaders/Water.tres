@@ -1,0 +1,21 @@
+[gd_resource type="ShaderMaterial" load_steps=5 format=3 uid="uid://5q26vba2qrls"]
+
+[ext_resource type="Shader" path="res://shaders/Water.gdshader" id="1_dsd55"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_s4vlc"]
+seamless = true
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_q0jr4"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_byjm1"]
+width = 1024
+height = 1024
+seamless = true
+as_normal_map = true
+noise = SubResource("FastNoiseLite_q0jr4")
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_dsd55")
+shader_parameter/normalmap = SubResource("NoiseTexture2D_byjm1")
+shader_parameter/noiseTex = SubResource("NoiseTexture2D_s4vlc")
