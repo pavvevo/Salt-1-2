@@ -1,36 +1,35 @@
-[gd_scene load_steps=8 format=3 uid="uid://bkbocnsmrfpyl"]
+[gd_scene load_steps=7 format=3 uid="uid://bkbocnsmrfpyl"]
 
 [ext_resource type="Script" path="res://scenes/Ship.gd" id="1_mvbg3"]
-[ext_resource type="Texture2D" uid="uid://c6wich6uj6g2t" path="res://textures/wood.png" id="1_to1rk"]
-[ext_resource type="Texture2D" uid="uid://56j4vf3j2wqd" path="res://textures/NormalMap(10).png" id="2_2cfsq"]
+[ext_resource type="Material" uid="uid://bmnh3le06h5vc" path="res://materials/wood.tres" id="2_hxo0h"]
+[ext_resource type="Shader" path="res://scenes/Mask.gdshader" id="3_li74r"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_wtjbk"]
 bounce = 0.5
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_qejdx"]
-size = Vector3(6, 1, 12)
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_u12dk"]
+render_priority = 0
+shader = ExtResource("3_li74r")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hce6u"]
-albedo_texture = ExtResource("1_to1rk")
-roughness = 0.5
-normal_enabled = true
-normal_scale = 0.5
-normal_texture = ExtResource("2_2cfsq")
-subsurf_scatter_strength = 1.0
-uv1_triplanar = true
-texture_filter = 0
-
-[sub_resource type="BoxMesh" id="BoxMesh_w463x"]
-material = SubResource("StandardMaterial3D_hce6u")
-size = Vector3(6, 1, 12)
+[sub_resource type="BoxShape3D" id="BoxShape3D_ixng5"]
 
 [node name="Ship" type="RigidBody3D"]
 mass = 10.0
 physics_material_override = SubResource("PhysicsMaterial_wtjbk")
 script = ExtResource("1_mvbg3")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-shape = SubResource("BoxShape3D_qejdx")
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
+material_override = ExtResource("2_hxo0h")
+use_collision = true
+size = Vector3(6, 1, 8)
 
-[node name="Model" type="MeshInstance3D" parent="."]
-mesh = SubResource("BoxMesh_w463x")
+[node name="CSGBox3D2" type="CSGBox3D" parent="CSGBox3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.254784, 0)
+operation = 2
+use_collision = true
+size = Vector3(5.5, 0.6, 7.5)
+material = SubResource("ShaderMaterial_u12dk")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(6, 0, 0, 0, 0.2, 0, 0, 0, 8, 0, -0.4, 0)
+shape = SubResource("BoxShape3D_ixng5")
