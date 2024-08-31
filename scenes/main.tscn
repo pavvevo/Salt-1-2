@@ -104,3 +104,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 44.4885, 0.434461, 19.9322)
 
 [node name="Ship8" parent="." instance=ExtResource("9_b6x2e")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -38.5115, 0.434461, 42.9322)
+
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.12112, 0)
