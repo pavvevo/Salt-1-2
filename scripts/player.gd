@@ -2,8 +2,9 @@ extends CharacterBody3D
 
 @onready var world = get_tree().get_root().get_node("Main")
 
-@onready var ocean = $"../Water"
 const splash = preload("res://scenes/Splash.tscn")
+
+@onready var ocean = $"../Water"
 
 @onready var standing_body = $StandingBody
 @onready var crouching_body = $CrouchingBody
@@ -11,7 +12,6 @@ const splash = preload("res://scenes/Splash.tscn")
 @onready var height_check = $HeightCheck
 @onready var climb_hand_check = $ClimbHandCheck
 @onready var climb_wall_check = $ClimbWallCheck
-
 
 const walk_speed = 7.0
 const run_speed = 10.0
@@ -48,8 +48,8 @@ var free_look_tilt = -8
 var land_timer = 0.0
 
 #water
+@export var water_force := 5.0
 var water_level = 0.0
-var water_force = -ProjectSettings.get_setting("physics/3d/default_gravity")
 var in_water = false
 var water_exists = true
 
@@ -228,19 +228,22 @@ func _physics_process(delta):
 	
 	#water
 	if water_exists:
-		if position.y <= water_level and onground <= -0.2:
+		var depth = water_level - global_position.y
+		if depth > 0:
 			if !in_water:
-				velocity.y = -2
 				in_water = true
-				var cool_splash = splash.instantiate()
-				world.add_child(cool_splash)
-				cool_splash.position = position - Vector3(0.0, 1.0, 0.0)
-				
-			velocity.y -= water_force * delta * 1.5
+			velocity.y += water_force * gravity * depth * delta
 		else:
 			in_water = false
+			
+	if in_water:
+		velocity.y *= 0.95
 	
 	move_and_slide()
+	
+	if ocean:
+		ocean.global_position.x = global_position.x
+		ocean.global_position.z = global_position.z
 
 	if is_on_floor():
 		friction = ground_friction
@@ -254,8 +257,4 @@ func _physics_process(delta):
 	else:
 		friction = air_friction
 		onground -= delta
-	
-	if(ocean):	
-		ocean.position.x = position.x
-		ocean.position.z = position.z
 		

@@ -79,6 +79,10 @@ Jump={
 "events": []
 }
 
+[layer_names]
+
+3d_physics/layer_2="Player"
+
 [shader_globals]
 
 ocean_pos={

@@ -1,6 +1,6 @@
 [gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://0ptdph6m7vvc"]
 
-[ext_resource type="Shader" path="res://scenes/Mask.gdshader" id="1_krbmb"]
+[ext_resource type="Shader" path="res://shaders/Mask.gdshader" id="1_krbmb"]
 
 [resource]
 render_priority = 0

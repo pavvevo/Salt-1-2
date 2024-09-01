@@ -7,8 +7,8 @@
 [ext_resource type="Texture2D" uid="uid://ct2nku25lldm" path="res://assets/Ground079L_2K-JPG_Roughness.jpg" id="5_mfmtg"]
 [ext_resource type="Texture2D" uid="uid://vqqktg2dnxv" path="res://assets/hdris/AllSkyFree_Sky_EpicBlueSunset_Equirect.png" id="6_auhfn"]
 [ext_resource type="PackedScene" uid="uid://d0pnock1gcriu" path="res://player/Player.tscn" id="7_0lso8"]
-[ext_resource type="PackedScene" uid="uid://duijcon305ja3" path="res://scenes/Water.tscn" id="8_k4i2f"]
 [ext_resource type="PackedScene" uid="uid://bkbocnsmrfpyl" path="res://scenes/Ship.tscn" id="9_b6x2e"]
+[ext_resource type="PackedScene" uid="uid://csca3k5nod8ij" path="res://scenes/Water.tscn" id="9_k4f62"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jquw1"]
 albedo_texture = ExtResource("1_d77dp")
@@ -49,7 +49,7 @@ size = Vector3(20, 3, 23)
 material = SubResource("StandardMaterial3D_jquw1")
 
 [node name="CSGBox3D4" type="CSGBox3D" parent="World"]
-transform = Transform3D(1, 0, 0, 0, 0.965926, -0.258819, 0, 0.258819, 0.965926, 0, 0.0310061, -25)
+transform = Transform3D(1, 0, 0, 0, 0.965926, -0.258819, 0, 0.258819, 0.965926, 0, 0.109871, -25)
 use_collision = true
 size = Vector3(20, 3, 20)
 material = SubResource("StandardMaterial3D_jquw1")
@@ -61,7 +61,7 @@ size = Vector3(20, 3, 20)
 material = SubResource("StandardMaterial3D_jquw1")
 
 [node name="CSGBox3D2" type="CSGBox3D" parent="World"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -37.2595, -1.4685, 11.972)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -37.2595, -62.6369, 11.972)
 use_collision = true
 size = Vector3(3064, 0.001, 2993)
 material = SubResource("StandardMaterial3D_jquw1")
@@ -78,32 +78,8 @@ shadow_enabled = true
 [node name="Player" parent="." instance=ExtResource("7_0lso8")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 4.9122, 0)
 
-[node name="Water" parent="." instance=ExtResource("8_k4i2f")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-
 [node name="Ship" parent="." instance=ExtResource("9_b6x2e")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.4746, 0.434461, -16.5259)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18.4746, 6.03446, -16.5259)
 
-[node name="Ship2" parent="." instance=ExtResource("9_b6x2e")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.5254, 0.434461, -16.5259)
-
-[node name="Ship3" parent="." instance=ExtResource("9_b6x2e")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -41.5115, 0.434461, -2.06776)
-
-[node name="Ship4" parent="." instance=ExtResource("9_b6x2e")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30.5115, 0.434461, -45.0678)
-
-[node name="Ship5" parent="." instance=ExtResource("9_b6x2e")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 53.4885, 0.434461, -20.0678)
-
-[node name="Ship6" parent="." instance=ExtResource("9_b6x2e")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.4885, 0.434461, 42.9322)
-
-[node name="Ship7" parent="." instance=ExtResource("9_b6x2e")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 44.4885, 0.434461, 19.9322)
-
-[node name="Ship8" parent="." instance=ExtResource("9_b6x2e")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -38.5115, 0.434461, 42.9322)
-
-[node name="CSGBox3D" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.12112, 0)
+[node name="Water" parent="." instance=ExtResource("9_k4f62")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -21.9572, -0.327868, -0.172596)

@@ -1,0 +1,10 @@
+[gd_resource type="NoiseTexture2D" load_steps=2 format=3 uid="uid://dmwm4b8amrisy"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_20il8"]
+noise_type = 3
+
+[resource]
+seamless = true
+as_normal_map = true
+bump_strength = 2.0
+noise = SubResource("FastNoiseLite_20il8")

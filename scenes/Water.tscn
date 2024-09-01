@@ -1,65 +1,61 @@
-[gd_scene load_steps=9 format=3 uid="uid://duijcon305ja3"]
+[gd_scene load_steps=8 format=3 uid="uid://csca3k5nod8ij"]
 
-[ext_resource type="Shader" path="res://shaders/MyWater.gdshader" id="1_lmgls"]
+[ext_resource type="Material" uid="uid://borbkfvgstxmv" path="res://materials/Water.tres" id="1_vt7ts"]
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_7s712"]
-noise_type = 4
-fractal_type = 2
-fractal_weighted_strength = 0.5
+[sub_resource type="PlaneMesh" id="PlaneMesh_6l2m6"]
+size = Vector2(100, 100)
+subdivide_width = 99
+subdivide_depth = 99
 
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_b3xb1"]
-width = 1024
-height = 1024
-seamless = true
-as_normal_map = true
-bump_strength = 16.0
-noise = SubResource("FastNoiseLite_7s712")
+[sub_resource type="GDScript" id="GDScript_1jtx5"]
+resource_name = "Water"
+script/source = "extends MeshInstance3D
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_6f3x3"]
-noise_type = 4
-frequency = 0.015
-fractal_type = 2
-fractal_gain = 0.35
-fractal_weighted_strength = 0.6
 
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_b0ikp"]
-width = 1024
-height = 1024
-seamless = true
-noise = SubResource("FastNoiseLite_6f3x3")
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	pass # Replace with function body.
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_px4cy"]
-render_priority = 0
-shader = ExtResource("1_lmgls")
-shader_parameter/modelSize = 1000.0
-shader_parameter/albedo = Color(0, 0.527, 0.97, 1)
-shader_parameter/fresnelColor = Color(0.346, 0.857, 1, 1)
-shader_parameter/deepColor = Color(1, 1, 1, 1)
-shader_parameter/shallowColor = Color(1, 1, 1, 1)
-shader_parameter/beers_law = 2.0
-shader_parameter/depth_offset = -0.75
-shader_parameter/speed = 0.05
-shader_parameter/waveDirecton = Vector2(1.5, 0.5)
-shader_parameter/waveDirectionTwo = Vector2(-0.5, 1)
-shader_parameter/waveHeight = 1.0
-shader_parameter/waveScale = 1.0
-shader_parameter/waveNormalScale = 0.05
-shader_parameter/edge_scale = 0.5
-shader_parameter/edge_color = Color(1, 1, 1, 1)
-shader_parameter/normalTex = SubResource("NoiseTexture2D_b3xb1")
-shader_parameter/waveTex = SubResource("NoiseTexture2D_b0ikp")
 
-[sub_resource type="PlaneMesh" id="PlaneMesh_t4gs7"]
-material = SubResource("ShaderMaterial_px4cy")
-size = Vector2(500, 500)
-subdivide_width = 500
-subdivide_depth = 500
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta):
+	pass
+"
 
-[sub_resource type="GDScript" id="GDScript_g5xcs"]
+[sub_resource type="PlaneMesh" id="PlaneMesh_e47xl"]
+size = Vector2(1000, 1000)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_tsmlt"]
+size = Vector2(100, 450)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_517uy"]
+size = Vector2(1000, 1000)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_got12"]
+size = Vector2(100, 450)
 
 [node name="Water" type="MeshInstance3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.3174)
-cast_shadow = 0
-mesh = SubResource("PlaneMesh_t4gs7")
-skeleton = NodePath("../World")
-script = SubResource("GDScript_g5xcs")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19.6992, 0, 0)
+mesh = SubResource("PlaneMesh_6l2m6")
+surface_material_override/0 = ExtResource("1_vt7ts")
+script = SubResource("GDScript_1jtx5")
+
+[node name="LowRes1" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -550, 0, 0)
+mesh = SubResource("PlaneMesh_e47xl")
+surface_material_override/0 = ExtResource("1_vt7ts")
+
+[node name="LowRes4" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 275)
+mesh = SubResource("PlaneMesh_tsmlt")
+surface_material_override/0 = ExtResource("1_vt7ts")
+
+[node name="LowRes6" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 550, 0, 0)
+mesh = SubResource("PlaneMesh_517uy")
+surface_material_override/0 = ExtResource("1_vt7ts")
+
+[node name="LowRes8" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -275)
+mesh = SubResource("PlaneMesh_got12")
+surface_material_override/0 = ExtResource("1_vt7ts")
