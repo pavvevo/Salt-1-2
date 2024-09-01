@@ -10,8 +10,9 @@ const splash = preload("res://scenes/Splash.tscn")
 @onready var crouching_body = $CrouchingBody
 @onready var head_check = $HeadCheck
 @onready var height_check = $HeightCheck
-@onready var climb_hand_check = $ClimbHandCheck
+@onready var climb_head_check = $ClimbHeadCheck
 @onready var climb_wall_check = $ClimbWallCheck
+
 
 const walk_speed = 7.0
 const run_speed = 10.0
@@ -212,7 +213,7 @@ func _physics_process(delta):
 		
 	#climb
 	if (Input.is_action_pressed("Jump")) and (onground < 0):
-		if climb_hand_check.is_colliding() and !climb_wall_check.is_colliding():
+		if climb_head_check.is_colliding() and !climb_wall_check.is_colliding():
 			velocity.y = jump_power * 0.6
 			camera_animation.play("Jump")
 
@@ -244,6 +245,7 @@ func _physics_process(delta):
 	if ocean:
 		ocean.global_position.x = global_position.x
 		ocean.global_position.z = global_position.z
+		RenderingServer.global_shader_parameter_set("ocean_pos", ocean.global_position);
 
 	if is_on_floor():
 		friction = ground_friction

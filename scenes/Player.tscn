@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://d00vcxq4pl6lo"]
+[gd_scene load_steps=13 format=3 uid="uid://cbfmat004qsnw"]
 
 [ext_resource type="Script" path="res://scripts/Player.gd" id="1_ohnqo"]
 
@@ -155,7 +155,10 @@ _data = {
 
 [node name="Player" type="CharacterBody3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0878021, 0)
+collision_layer = 3
+collision_mask = 3
 script = ExtResource("1_ohnqo")
+water_force = 3.0
 
 [node name="StandingBody" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
@@ -163,7 +166,7 @@ shape = SubResource("CapsuleShape3D_ffv8i")
 disabled = true
 
 [node name="CrouchingBody" type="CollisionShape3D" parent="."]
-transform = Transform3D(1.25, 0, 0, 0, 1, 0, 0, 0, 1.25, 0, 0.4, 0)
+transform = Transform3D(1.25, 0, 0, 0, 1.25, 0, 0, 0, 1.25, 0, 0.5, 0)
 shape = SubResource("CapsuleShape3D_nw1g5")
 
 [node name="HeadCheck" type="RayCast3D" parent="."]
@@ -172,6 +175,14 @@ target_position = Vector3(0, 2, 0)
 [node name="HeightCheck" type="RayCast3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)
 target_position = Vector3(0, -1.5, 0)
+
+[node name="ClimbWallCheck" type="RayCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, 0)
+target_position = Vector3(0, 0, -1.5)
+
+[node name="ClimbHeadCheck" type="RayCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+target_position = Vector3(0, 0, -1)
 
 [node name="Neck" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8, 0)
@@ -188,3 +199,5 @@ root_node = NodePath("../../../..")
 libraries = {
 "": SubResource("AnimationLibrary_2gxvt")
 }
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
