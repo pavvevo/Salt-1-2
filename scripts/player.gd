@@ -4,7 +4,7 @@ extends CharacterBody3D
 
 const splash = preload("res://scenes/Splash.tscn")
 
-@onready var ocean = $"../Water"
+@onready var water = $"../Water"
 
 @onready var standing_body = $StandingBody
 @onready var crouching_body = $CrouchingBody
@@ -13,7 +13,9 @@ const splash = preload("res://scenes/Splash.tscn")
 @onready var climb_head_check = $ClimbHeadCheck
 @onready var climb_wall_check = $ClimbWallCheck
 
+var drive = false
 
+var can_move = true
 const walk_speed = 7.0
 const run_speed = 10.0
 const crouch_speed = 5.0
@@ -86,6 +88,53 @@ func _input(event):
 
 func _physics_process(delta):
 	
+	can_move = true
+	
+	if drive:
+		can_move = false
+	
+	if can_move:
+		movement(delta)
+	else:
+		if not is_on_floor():
+			velocity.y -= gravity * delta
+		velocity.x = move_toward(velocity.x, 0.0, delta * friction)
+		velocity.z = move_toward(velocity.z, 0.0, delta * friction)
+		
+	#water
+	if water:
+		var depth = water.get_height(global_position) - global_position.y
+		if depth > 0:
+			if !in_water:
+				in_water = true
+			velocity.y += water_force * gravity * depth * delta
+		else:
+			in_water = false
+			
+	if in_water:
+		velocity.y *= 0.95
+	
+	move_and_slide()
+	
+	if water:
+		water.global_position.x = global_position.x
+		water.global_position.z = global_position.z
+		RenderingServer.global_shader_parameter_set("ocean_pos", water.global_position);
+
+	if is_on_floor():
+		friction = ground_friction
+		if(onground <= 0): 
+			if(last_velocity.y < -18.0):
+				camera_animation.play("Big Land")
+			else:
+				camera_animation.play("Land")
+			
+		onground = 0.2
+	else:
+		friction = air_friction
+		onground -= delta
+		
+func movement(delta):
 	var look_vector = Input.get_vector("Look Left", "Look Right", "Look Up", "Look Down")
 		
 	if(look_vector != Vector2.ZERO):
@@ -96,9 +145,6 @@ func _physics_process(delta):
 			rotate_y(deg_to_rad(look_vector.x * -sensetivity  * 20))
 		head.rotate_x(deg_to_rad(look_vector.y * -sensetivity  * 20))
 		head.rotation.x = clamp(head.rotation.x, deg_to_rad(-90), deg_to_rad(90))
-	
-	#view_model.rotation.y += (head.rotation.y - view_model.rotation.y) / 0.1 * delta
-	#view_model.rotation.x += (head.rotation.x - view_model.rotation.x) / 0.1 * delta
 	
 	#basic movement
 	move_speed = walk_speed
@@ -213,7 +259,7 @@ func _physics_process(delta):
 		
 	#climb
 	if (Input.is_action_pressed("Jump")) and (onground < 0):
-		if climb_head_check.is_colliding() and !climb_wall_check.is_colliding():
+		if !climb_head_check.is_colliding() and climb_wall_check.is_colliding():
 			velocity.y = jump_power * 0.6
 			camera_animation.play("Jump")
 
@@ -226,37 +272,3 @@ func _physics_process(delta):
 	velocity.z = move_toward(velocity.z, direction.z * move_speed, delta * friction)
 	
 	last_position = position
-	
-	#water
-	if water_exists:
-		var depth = water_level - global_position.y
-		if depth > 0:
-			if !in_water:
-				in_water = true
-			velocity.y += water_force * gravity * depth * delta
-		else:
-			in_water = false
-			
-	if in_water:
-		velocity.y *= 0.95
-	
-	move_and_slide()
-	
-	if ocean:
-		ocean.global_position.x = global_position.x
-		ocean.global_position.z = global_position.z
-		RenderingServer.global_shader_parameter_set("ocean_pos", ocean.global_position);
-
-	if is_on_floor():
-		friction = ground_friction
-		if(onground <= 0): 
-			if(last_velocity.y < -18.0):
-				camera_animation.play("Big Land")
-			else:
-				camera_animation.play("Land")
-			
-		onground = 0.2
-	else:
-		friction = air_friction
-		onground -= delta
-		

@@ -11,5 +11,4 @@ normal_scale = 0.5
 normal_texture = ExtResource("2_6x8je")
 subsurf_scatter_strength = 1.0
 uv1_triplanar = true
-uv1_world_triplanar = true
 texture_filter = 0

@@ -11,46 +11,92 @@ subdivide_depth = 99
 resource_name = "Water"
 script/source = "extends MeshInstance3D
 
+var material: ShaderMaterial
+var noise: Image
+
+var noise_scale: float
+var wave_speed: float
+var height_scale: float
+var time_scale: float
+
+var wave_direction_1: Vector2
+var wave_direction_2: Vector2
+
+var time: float
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass # Replace with function body.
+	material = get_surface_override_material(0)
+	noise = material.get_shader_parameter(\"wave\").noise.get_seamless_image(512, 512)
+	noise_scale = material.get_shader_parameter(\"noise_scale\")
+	height_scale = material.get_shader_parameter(\"height_scale\")
+	time_scale = material.get_shader_parameter(\"time_scale\")
+	
+	wave_direction_1 = material.get_shader_parameter(\"wave_direction\")
+	wave_direction_2 = material.get_shader_parameter(\"wave_direction2\")
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta):
+	time += delta
+	material.set_shader_parameter(\"time\", time)
+
+func get_height(world_position: Vector3) -> float:
+	var uv_x = wrapf(world_position.x / noise_scale + time * time_scale * wave_direction_1.x, 0, 1)
+	var uv_y = wrapf(world_position.z / noise_scale + time * time_scale * wave_direction_1.y, 0, 1)
+
+	var pixel_pos = Vector2(uv_x * noise.get_width(), uv_y * noise.get_height())
+	var final_noise = noise.get_pixelv(pixel_pos).r
+	
+	uv_x = wrapf(world_position.x / noise_scale + time * time_scale * wave_direction_2.x, 0, 1)
+	uv_y = wrapf(world_position.z / noise_scale + time * time_scale * wave_direction_2.y, 0, 1)
+
+	pixel_pos = Vector2(uv_x * noise.get_width(), uv_y * noise.get_height())
+	final_noise = lerp(final_noise, noise.get_pixelv(pixel_pos).r, 0.5)
+	
+	var water_pos = Vector2(global_position.x, global_position.z)
+	var point_distance = Vector2(world_position.x, world_position.z).distance_to(water_pos)
+	point_distance = clamp(point_distance, 0.0, 100.0)
+	point_distance = point_distance / 100.0
+	
+	final_noise *= 1.0 - point_distance
+	
+	return global_position.y + final_noise * height_scale;
 "
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_e47xl"]
-size = Vector2(1000, 1000)
+size = Vector2(950, 2000)
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_tsmlt"]
-size = Vector2(100, 450)
+size = Vector2(100, 950)
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_517uy"]
-size = Vector2(1000, 1000)
+size = Vector2(950, 2000)
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_got12"]
-size = Vector2(100, 450)
+size = Vector2(100, 950)
 
 [node name="Water" type="MeshInstance3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19.6992, 0, 0)
 mesh = SubResource("PlaneMesh_6l2m6")
 surface_material_override/0 = ExtResource("1_vt7ts")
 script = SubResource("GDScript_1jtx5")
 
 [node name="LowRes1" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -550, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -525, 0, 0)
 mesh = SubResource("PlaneMesh_e47xl")
 surface_material_override/0 = ExtResource("1_vt7ts")
 
 [node name="LowRes4" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 275)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 525)
 mesh = SubResource("PlaneMesh_tsmlt")
 surface_material_override/0 = ExtResource("1_vt7ts")
 
 [node name="LowRes6" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 550, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 525, 0, 0)
 mesh = SubResource("PlaneMesh_517uy")
 surface_material_override/0 = ExtResource("1_vt7ts")
 
 [node name="LowRes8" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -275)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -525)
 mesh = SubResource("PlaneMesh_got12")
 surface_material_override/0 = ExtResource("1_vt7ts")

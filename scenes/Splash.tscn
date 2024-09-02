@@ -1,21 +1,33 @@
-[gd_scene load_steps=2 format=3 uid="uid://dqocwgprmydlx"]
+[gd_scene load_steps=6 format=3 uid="uid://dqocwgprmydlx"]
 
 [ext_resource type="Script" path="res://scripts/Splash.gd" id="1_rf4h1"]
+[ext_resource type="Shader" path="res://shaders/Splash.gdshader" id="2_hmynf"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_g321w"]
+render_priority = 0
+shader = ExtResource("2_hmynf")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_w0tx2"]
+gravity = Vector3(0, 0, 0)
+
+[sub_resource type="QuadMesh" id="QuadMesh_8y5ut"]
+orientation = 1
 
 [node name="Splash" type="Node3D"]
 script = ExtResource("1_rf4h1")
 
 [node name="GPUParticles3D" type="GPUParticles3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
-emitting = false
-one_shot = true
+material_override = SubResource("ShaderMaterial_g321w")
+amount = 1
+lifetime = 0.5
 explosiveness = 1.0
 fixed_fps = 60
-trail_enabled = true
-trail_lifetime = 0.5
+process_material = SubResource("ParticleProcessMaterial_w0tx2")
+draw_pass_1 = SubResource("QuadMesh_8y5ut")
 
 [node name="Timer" type="Timer" parent="."]
-wait_time = 1.5
+wait_time = 0.5
 one_shot = true
 autostart = true
 

@@ -1,9 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://dbfa2ob3vgd7c"]
+[gd_scene load_steps=9 format=3 uid="uid://dbfa2ob3vgd7c"]
 
 [ext_resource type="Texture2D" uid="uid://vqqktg2dnxv" path="res://assets/hdris/AllSkyFree_Sky_EpicBlueSunset_Equirect.png" id="1_baa6l"]
 [ext_resource type="Material" uid="uid://bmnh3le06h5vc" path="res://materials/wood.tres" id="2_53jsq"]
 [ext_resource type="PackedScene" uid="uid://cbfmat004qsnw" path="res://scenes/Player.tscn" id="3_3uj76"]
 [ext_resource type="PackedScene" uid="uid://csca3k5nod8ij" path="res://scenes/Water.tscn" id="4_snvwm"]
+[ext_resource type="PackedScene" uid="uid://bkbocnsmrfpyl" path="res://scenes/Ship.tscn" id="5_1fqkb"]
 
 [sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_dhnrm"]
 panorama = ExtResource("1_baa6l")
@@ -55,7 +56,9 @@ use_collision = true
 size = Vector3(7, 6, 7)
 
 [node name="Water" parent="." instance=ExtResource("4_snvwm")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 
 [node name="Player" parent="." instance=ExtResource("3_3uj76")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.9122, 0)
+
+[node name="Ship" parent="." instance=ExtResource("5_1fqkb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, 7, 0)

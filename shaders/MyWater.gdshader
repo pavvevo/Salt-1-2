@@ -15,6 +15,7 @@ uniform vec2 wave_direction2 = vec2(-0.5,0.5); // Direction of wave 2
 uniform float time_scale : hint_range(0.0, 0.2, 0.005) = 0.1; // Rate of movement multiplied by TIME
 uniform float noise_scale = 20.0; // Scale of the wave noise texture
 uniform float height_scale = 2.0; // Mulitply the normal height values
+uniform float time = 0.0;
 
 // Depth color
 uniform vec3 color_deep : source_color = vec3(0.11,0.29,0.33); // Deep depth color
@@ -49,8 +50,8 @@ float edge(float depth){
 }
 
 float waveheight() {
-	float h1 = texture(wave, world_pos.xz / noise_scale + (TIME * wave_direction) * time_scale).r;
-	float h2 = texture(wave, world_pos.xz / noise_scale + (TIME * wave_direction2) * time_scale).r;
+	float h1 = texture(wave, world_pos.xz / noise_scale + (time * wave_direction) * time_scale).r;
+	float h2 = texture(wave, world_pos.xz / noise_scale + (time * wave_direction2) * time_scale).r;
 	return mix(h1, h2, 0.5);
 }
 
@@ -58,14 +59,14 @@ void vertex() {
 	world_pos = floor(NODE_POSITION_WORLD) + VERTEX;
 	
 	vertex_distance = distance(world_pos,ocean_pos);
-	vertex_distance = clamp(vertex_distance, 0.0, 85.0);
-	vertex_distance_clamped = vertex_distance / 85.0;
+	vertex_distance = clamp(vertex_distance, 0.0, 100.0);
+	vertex_distance_clamped = vertex_distance / 100.0;
 	float height_mix = waveheight();
 	
 	VERTEX.y += height_mix * height_scale * (1.0 - vertex_distance_clamped);
 	
-	if(abs(VERTEX.x) == 50.0) VERTEX.y = 0.0;
-	if(abs(VERTEX.z) == 50.0) VERTEX.y = 0.0;
+	VERTEX.y *= 1.0 - step(0.499, abs(ocean_pos.x - world_pos.x) / 100.0);
+	VERTEX.y *= 1.0 - step(0.499, abs(ocean_pos.z - world_pos.z) / 100.0);
 	
 	VERTEX.x -= NODE_POSITION_WORLD.x - floor(NODE_POSITION_WORLD.x);
 	VERTEX.z -= NODE_POSITION_WORLD.z - floor(NODE_POSITION_WORLD.z);
@@ -90,14 +91,14 @@ void fragment() {
 	float z_dif = z_depth - z_pos;
 	
 	// Time calculations for wave (normal map) movement
-	vec2 time = (TIME * wave_direction) * time_scale; // Movement rate of first wave
-	vec2 time2 = (TIME * wave_direction2) * time_scale; // Movement rate of second wave
+	vec2 w_time = (time * wave_direction) * time_scale; // Movement rate of first wave
+	vec2 w_time2 = (time * wave_direction2) * time_scale; // Movement rate of second wave
 	
 	// Blend normal maps into one
-	vec3 normal_blend = mix(texture(texture_normal,world_pos.xz / 10.0 + time / 10.0).rgb, texture(texture_normal2,world_pos.xz / 10.0 + time2 / 10.0).rgb, 0.5);
+	vec3 normal_blend = mix(texture(texture_normal,world_pos.xz / 10.0 + w_time / 10.0).rgb, texture(texture_normal2,world_pos.xz / 10.0 + w_time2 / 10.0).rgb, 0.5);
 	
 	// Blend Wave1 and Wave2 maps
-	vec3 wave_normal_blend = mix(texture(wave_bump, world_pos.xz / noise_scale + time).xyz,texture(wave_bump, world_pos.xz / noise_scale + time2).xyz,0.3);
+	vec3 wave_normal_blend = mix(texture(wave_bump, world_pos.xz / noise_scale + w_time).xyz,texture(wave_bump, world_pos.xz / noise_scale + w_time2).xyz,0.3);
 	
 	// Calculate Fresnel
 	float fresnel = fresnel(5.0, NORMAL, VIEW);
