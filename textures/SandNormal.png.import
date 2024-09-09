@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://56j4vf3j2wqd"
-path.s3tc="res://.godot/imported/NormalMap(10).png-99396b9d6f7c029902c8d99b4cb8db71.s3tc.ctex"
+uid="uid://bk06xyv3hvmfw"
+path.s3tc="res://.godot/imported/SandNormal.png-12efe5992801f9214f9d50bd8e720133.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://textures/NormalMap(10).png"
-dest_files=["res://.godot/imported/NormalMap(10).png-99396b9d6f7c029902c8d99b4cb8db71.s3tc.ctex"]
+source_file="res://textures/SandNormal.png"
+dest_files=["res://.godot/imported/SandNormal.png-12efe5992801f9214f9d50bd8e720133.s3tc.ctex"]
 
 [params]
 
@@ -25,7 +25,7 @@ compress/channel_pack=0
 mipmaps/generate=true
 mipmaps/limit=-1
 roughness/mode=1
-roughness/src_normal="res://textures/NormalMap(10).png"
+roughness/src_normal="res://textures/SandNormal.png"
 process/fix_alpha_border=true
 process/premult_alpha=false
 process/normal_map_invert_y=false

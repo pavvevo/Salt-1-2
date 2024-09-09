@@ -1,8 +1,9 @@
-[gd_scene load_steps=9 format=3 uid="uid://dbfa2ob3vgd7c"]
+[gd_scene load_steps=10 format=3 uid="uid://dbfa2ob3vgd7c"]
 
 [ext_resource type="Texture2D" uid="uid://vqqktg2dnxv" path="res://assets/hdris/AllSkyFree_Sky_EpicBlueSunset_Equirect.png" id="1_baa6l"]
-[ext_resource type="Material" uid="uid://bmnh3le06h5vc" path="res://materials/wood.tres" id="2_53jsq"]
+[ext_resource type="Material" uid="uid://bmnh3le06h5vc" path="res://materials/Wood.tres" id="2_53jsq"]
 [ext_resource type="PackedScene" uid="uid://cbfmat004qsnw" path="res://scenes/Player.tscn" id="3_3uj76"]
+[ext_resource type="Material" uid="uid://8d8hecebu3ys" path="res://materials/Sand.tres" id="3_8tmep"]
 [ext_resource type="PackedScene" uid="uid://csca3k5nod8ij" path="res://scenes/Water.tscn" id="4_snvwm"]
 [ext_resource type="PackedScene" uid="uid://bkbocnsmrfpyl" path="res://scenes/Ship.tscn" id="5_1fqkb"]
 
@@ -16,8 +17,12 @@ sky_material = SubResource("PanoramaSkyMaterial_dhnrm")
 background_mode = 2
 sky = SubResource("Sky_8mnho")
 tonemap_mode = 2
+ssr_enabled = true
 ssao_enabled = true
 glow_enabled = true
+fog_density = 0.001
+volumetric_fog_ambient_inject = 1.0
+volumetric_fog_sky_affect = 0.5
 
 [node name="Main" type="Node3D"]
 
@@ -55,10 +60,22 @@ material_override = ExtResource("2_53jsq")
 use_collision = true
 size = Vector3(7, 6, 7)
 
+[node name="Ground" type="CSGBox3D" parent="World"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -8, 0)
+material_override = ExtResource("3_8tmep")
+use_collision = true
+size = Vector3(10000, 1, 10000)
+
 [node name="Water" parent="." instance=ExtResource("4_snvwm")]
 
 [node name="Player" parent="." instance=ExtResource("3_3uj76")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.9122, 0)
 
 [node name="Ship" parent="." instance=ExtResource("5_1fqkb")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, 7, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 42.3906, 2.8, 0)
+
+[node name="Ship2" parent="." instance=ExtResource("5_1fqkb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -33.6094, 2.8, 0)
+
+[node name="Ship3" parent="." instance=ExtResource("5_1fqkb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.3199, 2.8, 43.7346)

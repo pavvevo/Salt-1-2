@@ -8,5 +8,5 @@ fractal_weighted_strength = 0.5
 [resource]
 seamless = true
 as_normal_map = true
-bump_strength = 20.0
+bump_strength = 10.0
 noise = SubResource("FastNoiseLite_d42d2")

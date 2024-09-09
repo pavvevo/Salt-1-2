@@ -1,0 +1,14 @@
+[gd_resource type="StandardMaterial3D" load_steps=3 format=3 uid="uid://8d8hecebu3ys"]
+
+[ext_resource type="Texture2D" uid="uid://clmq100544ykx" path="res://textures/sand.png" id="1_oeemj"]
+[ext_resource type="Texture2D" uid="uid://bk06xyv3hvmfw" path="res://textures/SandNormal.png" id="2_t8qhc"]
+
+[resource]
+albedo_texture = ExtResource("1_oeemj")
+roughness = 0.25
+normal_enabled = true
+normal_scale = 0.5
+normal_texture = ExtResource("2_t8qhc")
+subsurf_scatter_strength = 1.0
+uv1_triplanar = true
+texture_filter = 0

@@ -1,4 +1,6 @@
 shader_type spatial;
+//render_mode cull_disabled;
+//render_mode depth_prepass_alpha;
 
 global uniform vec3 ocean_pos; // Global shader value for the player position
 
@@ -12,9 +14,9 @@ uniform sampler2D texture_normal; // Additional normal noise
 uniform sampler2D texture_normal2; // Additional normal noise
 uniform vec2 wave_direction = vec2(0.5,-0.2); // Direction of wave 1
 uniform vec2 wave_direction2 = vec2(-0.5,0.5); // Direction of wave 2
-uniform float time_scale : hint_range(0.0, 0.2, 0.005) = 0.1; // Rate of movement multiplied by TIME
-uniform float noise_scale = 20.0; // Scale of the wave noise texture
-uniform float height_scale = 2.0; // Mulitply the normal height values
+uniform float time_scale : hint_range(0.0, 0.2, 0.005) = 0.1;
+uniform float noise_scale = 20.0;
+uniform float height_scale = 2.0;
 uniform float time = 0.0;
 
 // Depth color
@@ -22,12 +24,6 @@ uniform vec3 color_deep : source_color = vec3(0.11,0.29,0.33); // Deep depth col
 uniform vec3 color_shallow : source_color = vec3(0.0,0.47,0.76); // Shallow depth color
 uniform float beers_law = 2.0; // Beer's law application
 uniform float depth_offset = 1.5; // Offset
-
-// Edge detection
-uniform float edge_scale = 0.3;
-uniform float near = 1.0;
-uniform float far = 100.0;
-uniform vec3 edge_color : source_color = vec3(1.0,1.0,1.0);
 
 // Varying variables
 varying float height;
@@ -39,14 +35,18 @@ varying vec2 vertex_pos;
 uniform sampler2D DEPTH_TEXTURE : hint_depth_texture, filter_linear_mipmap;
 uniform sampler2D SCREEN_TEXTURE : hint_screen_texture, filter_linear_mipmap;
 
-float fresnel(float amount, vec3 normal, vec3 view)
-{
+float fresnel(float amount, vec3 normal, vec3 view) {
 	return pow((1.0 - clamp(dot(normalize(normal), normalize(view)), 0.0, 1.0 )), amount);
 }
 
-float edge(float depth){
-	depth = 2.0 * depth - 1.0;
-	return near * far / (far + depth * (near - far));
+uniform float near = 0.15;
+uniform float far = 300.0;
+uniform float edge_scale = 0.3;
+uniform vec3 edge_color : source_color = vec3(1.0,1.0,1.0);
+
+float linearize(float c_depth) {
+	c_depth = 2.0 * c_depth - 1.0;
+	return near * far / (far + c_depth * (near - far));
 }
 
 float waveheight() {
@@ -58,59 +58,48 @@ float waveheight() {
 void vertex() {
 	world_pos = floor(NODE_POSITION_WORLD) + VERTEX;
 	
-	vertex_distance = distance(world_pos,ocean_pos);
+	vertex_distance = distance(world_pos,NODE_POSITION_WORLD);
 	vertex_distance = clamp(vertex_distance, 0.0, 100.0);
 	vertex_distance_clamped = vertex_distance / 100.0;
 	float height_mix = waveheight();
 	
 	VERTEX.y += height_mix * height_scale * (1.0 - vertex_distance_clamped);
 	
-	VERTEX.y *= 1.0 - step(0.499, abs(ocean_pos.x - world_pos.x) / 100.0);
-	VERTEX.y *= 1.0 - step(0.499, abs(ocean_pos.z - world_pos.z) / 100.0);
+	VERTEX.y *= 1.0 - step(0.49, abs(NODE_POSITION_WORLD.x - world_pos.x) / 100.0);
+	VERTEX.y *= 1.0 - step(0.49, abs(NODE_POSITION_WORLD.z - world_pos.z) / 100.0);
 	
 	VERTEX.x -= NODE_POSITION_WORLD.x - floor(NODE_POSITION_WORLD.x);
 	VERTEX.z -= NODE_POSITION_WORLD.z - floor(NODE_POSITION_WORLD.z);
 }
 
 void fragment() {
-	// Depth variables and calc
-	float depth_texture = texture(DEPTH_TEXTURE, SCREEN_UV).r * 2.0 - 1.0;
-	float depth = PROJECTION_MATRIX[3][2] / (depth_texture + PROJECTION_MATRIX[2][2]);
-	float depth_blend = exp((depth+VERTEX.z + depth_offset) * -beers_law);
-	depth_blend = clamp(1.0 - depth_blend, 0.0, 1.0);	
-	float depth_blend_power = clamp(pow(depth_blend, 2.5), 0.0, 1.0);
+	vec2 w_time = (time * wave_direction) * time_scale;
+	vec2 w_time2 = (time * wave_direction2) * time_scale;
+	
+	vec3 wave_normal_1 = texture(texture_normal,world_pos.xz / 10.0 + w_time / 10.0).rgb;
+	vec3 wave_normal_2 = texture(texture_normal2,world_pos.xz / 10.0 + w_time2 / 10.0).rgb;
+	vec3 normal_blend = mix(wave_normal_1, wave_normal_2, 0.5);
+	
+	vec3 wave_bump_1 = texture(wave_bump, world_pos.xz / noise_scale + w_time).xyz;
+	vec3 wave_bump_2 = texture(wave_bump, world_pos.xz / noise_scale + w_time2).xyz;
+	vec3 wave_normal_blend = mix(wave_bump_1,wave_bump_2,0.3);
+	
+	vec3 screen_color = texture(SCREEN_TEXTURE, SCREEN_UV).rgb;
+	screen_color = mix(screen_color, vec3(1.0), 0.75);
 
-	// Retrieving depth color and applying the deep and shallow colors
-	vec3 screen_color = textureLod(SCREEN_TEXTURE, SCREEN_UV, depth_blend_power * 2.5).rgb;
-	vec3 depth_color = mix(color_shallow.rgb, color_deep.rgb, depth_blend_power);
-	vec3 color = mix(screen_color * depth_color, depth_color * 0.25, depth_blend_power * 0.5);
-	
-	// Getting edge depth calc
-	float z_depth = edge(texture(DEPTH_TEXTURE, SCREEN_UV).x);
-	float z_pos = edge(FRAGCOORD.z);
-	float z_dif = z_depth - z_pos;
-	
-	// Time calculations for wave (normal map) movement
-	vec2 w_time = (time * wave_direction) * time_scale; // Movement rate of first wave
-	vec2 w_time2 = (time * wave_direction2) * time_scale; // Movement rate of second wave
-	
-	// Blend normal maps into one
-	vec3 normal_blend = mix(texture(texture_normal,world_pos.xz / 10.0 + w_time / 10.0).rgb, texture(texture_normal2,world_pos.xz / 10.0 + w_time2 / 10.0).rgb, 0.5);
-	
-	// Blend Wave1 and Wave2 maps
-	vec3 wave_normal_blend = mix(texture(wave_bump, world_pos.xz / noise_scale + w_time).xyz,texture(wave_bump, world_pos.xz / noise_scale + w_time2).xyz,0.3);
-	
-	// Calculate Fresnel
 	float fresnel = fresnel(5.0, NORMAL, VIEW);
-	vec3 surface_color = mix(albedo, albedo2, fresnel); // Interpolate albedo values by frensel
+	vec3 surface_color = mix(albedo, albedo2, fresnel);
 	
-	// Add Edge Color to Surface Color Albedo
-	vec3 depth_color_adj = mix(edge_color, color, step(edge_scale, z_dif));
+	float depth = texture(DEPTH_TEXTURE, SCREEN_UV).r;
+	float linear_depth = linearize(depth);
 	
-	ALBEDO = clamp(surface_color + depth_color_adj,vec3(0.0),vec3(1.0));
+	float zpos = linearize(FRAGCOORD.z);
+	float depth_diff = linear_depth - zpos;
+	vec3 final_color = mix(edge_color, surface_color * screen_color, step(edge_scale, depth_diff));
+	
+	ALBEDO = clamp(final_color,vec3(0.0),vec3(1.0));
 	METALLIC = metallic;
 	ROUGHNESS = roughness;
 	NORMAL_MAP = mix(wave_normal_blend, normal_blend, 0.5);
 	SPECULAR = wave_normal_blend.r;
-
 }

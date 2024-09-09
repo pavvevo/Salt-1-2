@@ -1,0 +1,242 @@
+[gd_scene load_steps=16 format=3 uid="uid://cbfmat004qsnw"]
+
+[ext_resource type="Script" path="res://scripts/Player.gd" id="1_ohnqo"]
+[ext_resource type="Texture2D" uid="uid://hmw6anavhfad" path="res://textures/cursor.png" id="2_d16le"]
+[ext_resource type="Script" path="res://scripts/Interact.gd" id="3_5m316"]
+[ext_resource type="Texture2D" uid="uid://xhi3ijqi0nxn" path="res://textures/hand.png" id="4_kmltt"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ffv8i"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_nw1g5"]
+radius = 0.4
+height = 0.8
+
+[sub_resource type="Animation" id="Animation_qx8a0"]
+resource_name = "Big Land"
+length = 0.8
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Neck/Head/Eyes/Camera3D:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.8),
+"transitions": PackedFloat32Array(-2, 0.5, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(0, -0.5, 0), Vector3(0, 0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Neck/Head/Eyes/Camera3D:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.8),
+"transitions": PackedFloat32Array(-2, -2, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(-0.523599, 0, -0.0523599), Vector3(0, 0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_h3yda"]
+resource_name = "Jump"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Neck/Head/Eyes/Camera3D:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.5),
+"transitions": PackedFloat32Array(-2, 0.5, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(-0.0349066, 0, 0.0174533), Vector3(0, 0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Neck/Head/Eyes/Camera3D:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.5),
+"transitions": PackedFloat32Array(-2, -2, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(0, 0.1, 0), Vector3(0, 0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_sdxj7"]
+resource_name = "Knife Idle"
+length = 6.0
+loop_mode = 1
+
+[sub_resource type="Animation" id="Animation_v86y4"]
+resource_name = "Knife Run"
+length = 0.5
+loop_mode = 1
+step = 0.05
+
+[sub_resource type="Animation" id="Animation_wed6j"]
+resource_name = "Knife Slice"
+length = 1.25
+step = 0.05
+
+[sub_resource type="Animation" id="Animation_qf5fl"]
+resource_name = "Knife Slide"
+length = 0.5
+loop_mode = 1
+step = 0.05
+
+[sub_resource type="Animation" id="Animation_qtiap"]
+resource_name = "Land"
+length = 0.8
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Neck/Head/Eyes/Camera3D:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.8),
+"transitions": PackedFloat32Array(-2, 0.5, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(0, -0.1, 0), Vector3(0, 0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Neck/Head/Eyes/Camera3D:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.8),
+"transitions": PackedFloat32Array(-2, -2, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(-0.0872665, 0, -0.0174533), Vector3(0, 0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_s2kem"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Neck/Head/Eyes/Camera3D:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Neck/Head/Eyes/Camera3D:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_2gxvt"]
+_data = {
+"Big Land": SubResource("Animation_qx8a0"),
+"Jump": SubResource("Animation_h3yda"),
+"Knife Idle": SubResource("Animation_sdxj7"),
+"Knife Run": SubResource("Animation_v86y4"),
+"Knife Slice": SubResource("Animation_wed6j"),
+"Knife Slide": SubResource("Animation_qf5fl"),
+"Land": SubResource("Animation_qtiap"),
+"RESET": SubResource("Animation_s2kem")
+}
+
+[node name="Player" type="CharacterBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0878021, 0)
+collision_layer = 3
+collision_mask = 3
+script = ExtResource("1_ohnqo")
+water_force = 3.0
+
+[node name="StandingBody" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CapsuleShape3D_ffv8i")
+disabled = true
+
+[node name="CrouchingBody" type="CollisionShape3D" parent="."]
+transform = Transform3D(1.25, 0, 0, 0, 1.25, 0, 0, 0, 1.25, 0, 0.5, 0)
+shape = SubResource("CapsuleShape3D_nw1g5")
+
+[node name="HeadCheck" type="RayCast3D" parent="."]
+target_position = Vector3(0, 2, 0)
+
+[node name="HeightCheck" type="RayCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)
+target_position = Vector3(0, -1.5, 0)
+
+[node name="ClimbWallCheck" type="RayCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, 0)
+target_position = Vector3(0, 0, -1.5)
+
+[node name="ClimbHeadCheck" type="RayCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+target_position = Vector3(0, 0, -1)
+
+[node name="Neck" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8, 0)
+
+[node name="Head" type="Node3D" parent="Neck"]
+
+[node name="Eyes" type="Node3D" parent="Neck/Head"]
+
+[node name="Camera3D" type="Camera3D" parent="Neck/Head/Eyes"]
+fov = 90.0
+
+[node name="Crosshair" type="TextureRect" parent="Neck/Head/Eyes/Camera3D"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -4.0
+offset_top = -4.0
+offset_right = 4.0
+offset_bottom = 4.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("2_d16le")
+
+[node name="InteractCheck" type="RayCast3D" parent="Neck/Head/Eyes/Camera3D"]
+target_position = Vector3(0, 0, -2)
+collision_mask = 5
+collide_with_areas = true
+script = ExtResource("3_5m316")
+crosshair_basic = ExtResource("2_d16le")
+crosshair_hover = ExtResource("4_kmltt")
+
+[node name="Prompt" type="Label" parent="Neck/Head/Eyes/Camera3D/InteractCheck"]
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = 107.0
+offset_bottom = 130.0
+grow_horizontal = 2
+grow_vertical = 2
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CameraAnimation" type="AnimationPlayer" parent="Neck/Head/Eyes"]
+root_node = NodePath("../../../..")
+libraries = {
+"": SubResource("AnimationLibrary_2gxvt")
+}
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]

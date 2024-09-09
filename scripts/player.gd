@@ -2,7 +2,7 @@ extends CharacterBody3D
 
 @onready var world = get_tree().get_root().get_node("Main")
 
-const splash = preload("res://scenes/Splash.tscn")
+@export var splash_scene: PackedScene
 
 @onready var water = $"../Water"
 
@@ -13,9 +13,14 @@ const splash = preload("res://scenes/Splash.tscn")
 @onready var climb_head_check = $ClimbHeadCheck
 @onready var climb_wall_check = $ClimbWallCheck
 
+@onready var cursor = $Neck/Head/Eyes/Camera3D/Cursor
+@onready var screen_effects = $Neck/Head/Eyes/Camera3D/ScreenEffects
+
+@onready var leg_animator = $Legs/LegAnimator
 var drive = false
 
 var can_move = true
+var can_look = true
 const walk_speed = 7.0
 const run_speed = 10.0
 const crouch_speed = 5.0
@@ -78,43 +83,37 @@ func _ready():
 
 func _input(event):
 	if event is InputEventMouseMotion:
-		if is_free_looking:
-			neck.rotate_y(deg_to_rad(event.relative.x * -sensetivity))
-			neck.rotation.y = clamp(neck.rotation.y, deg_to_rad(-120), deg_to_rad(120))
-		else:
-			rotate_y(deg_to_rad(event.relative.x * -sensetivity))
-		head.rotate_x(deg_to_rad(event.relative.y * -sensetivity))
-		head.rotation.x = clamp(head.rotation.x, deg_to_rad(-90), deg_to_rad(90))
+		if can_look:
+			if is_free_looking:
+				neck.rotate_y(deg_to_rad(event.relative.x * -sensetivity))
+				neck.rotation.y = clamp(neck.rotation.y, deg_to_rad(-120), deg_to_rad(120))
+			else:
+				rotate_y(deg_to_rad(event.relative.x * -sensetivity))
+			head.rotate_x(deg_to_rad(event.relative.y * -sensetivity))
+			head.rotation.x = clamp(head.rotation.x, deg_to_rad(-90), deg_to_rad(90))
 
 func _physics_process(delta):
 	
 	can_move = true
+	can_look = true
 	
 	if drive:
 		can_move = false
+		can_look = false
 	
 	if can_move:
 		movement(delta)
 	else:
-		if not is_on_floor():
-			velocity.y -= gravity * delta
-		velocity.x = move_toward(velocity.x, 0.0, delta * friction)
-		velocity.z = move_toward(velocity.z, 0.0, delta * friction)
+		pass
+		#velocity = Vector3.ZERO
 		
-	#water
-	if water:
-		var depth = water.get_height(global_position) - global_position.y
-		if depth > 0:
-			if !in_water:
-				in_water = true
-			velocity.y += water_force * gravity * depth * delta
+	if velocity.length() > 1.0:
+		if is_sliding:
+			leg_animator.play("Slide")
 		else:
-			in_water = false
-			
-	if in_water:
-		velocity.y *= 0.95
-	
-	move_and_slide()
+			leg_animator.play("Walk")
+	else:
+		leg_animator.play("Idle")
 	
 	if water:
 		water.global_position.x = global_position.x
@@ -159,9 +158,6 @@ func movement(delta):
 	
 	standing_body.disabled = false
 	crouching_body.disabled = true
-	
-	if in_water:
-		is_crouching = false
 	
 	if is_crouching:
 		standing_body.disabled = true
@@ -260,7 +256,7 @@ func movement(delta):
 	#climb
 	if (Input.is_action_pressed("Jump")) and (onground < 0):
 		if !climb_head_check.is_colliding() and climb_wall_check.is_colliding():
-			velocity.y = jump_power * 0.6
+			velocity.y = jump_power * 0.8
 			camera_animation.play("Jump")
 
 	input_dir = Input.get_vector("Left", "Right", "Forward", "Backwards")
@@ -272,3 +268,30 @@ func movement(delta):
 	velocity.z = move_toward(velocity.z, direction.z * move_speed, delta * friction)
 	
 	last_position = position
+	
+	#water
+	if water:
+		var depth = water.get_height(global_position) - global_position.y
+		if depth > 0:
+			if !in_water:
+				var splash = splash_scene.instantiate()
+				add_child(splash)
+				splash.position.y = water.get_height(global_position)
+				in_water = true
+				
+			velocity.y += water_force * gravity * depth * delta
+		else:
+			in_water = false
+			
+		var eyes_depth = water.get_height(eyes.global_position) - eyes.global_position.y
+		if eyes_depth > 0:
+			var shader = screen_effects.material
+			shader.set_shader_parameter("blend", 1.0)
+		else:
+			var shader = screen_effects.material
+			shader.set_shader_parameter("blend", 0.0)
+			
+	if in_water:
+		velocity.y *= 0.95
+		
+	move_and_slide()

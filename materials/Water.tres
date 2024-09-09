@@ -1,10 +1,10 @@
 [gd_resource type="ShaderMaterial" load_steps=6 format=3 uid="uid://borbkfvgstxmv"]
 
 [ext_resource type="Shader" path="res://shaders/MyWater.gdshader" id="1_5fuvs"]
-[ext_resource type="Texture2D" uid="uid://dmwm4b8amrisy" path="res://materials/new_noise_texture_2d3.tres" id="2_1d76c"]
-[ext_resource type="Texture2D" uid="uid://b8cpa884co132" path="res://new_noise_texture_2d4.tres" id="3_vk50d"]
-[ext_resource type="Texture2D" uid="uid://dofbxjum8p6b7" path="res://materials/new_noise_texture_2d.tres" id="4_mm1oo"]
-[ext_resource type="Texture2D" uid="uid://2uf67jbrvb4t" path="res://materials/new_noise_texture_2d2.tres" id="5_3lp5p"]
+[ext_resource type="Texture2D" uid="uid://dmwm4b8amrisy" path="res://textures/new_noise_texture_2d3.tres" id="2_1d76c"]
+[ext_resource type="Texture2D" uid="uid://b8cpa884co132" path="res://textures/new_noise_texture_2d4.tres" id="3_vk50d"]
+[ext_resource type="Texture2D" uid="uid://dofbxjum8p6b7" path="res://textures/new_noise_texture_2d.tres" id="4_mm1oo"]
+[ext_resource type="Texture2D" uid="uid://2uf67jbrvb4t" path="res://textures/new_noise_texture_2d2.tres" id="5_3lp5p"]
 
 [resource]
 render_priority = 0
@@ -23,9 +23,9 @@ shader_parameter/color_deep = Color(0.11, 0.29, 0.33, 1)
 shader_parameter/color_shallow = Color(0, 0.47, 0.76, 1)
 shader_parameter/beers_law = 2.0
 shader_parameter/depth_offset = 1.5
-shader_parameter/edge_scale = 0.3
-shader_parameter/near = 1.0
+shader_parameter/near = 0.1
 shader_parameter/far = 1000.0
+shader_parameter/edge_scale = 0.1
 shader_parameter/edge_color = Color(1, 1, 1, 1)
 shader_parameter/wave = ExtResource("4_mm1oo")
 shader_parameter/wave_bump = ExtResource("5_3lp5p")

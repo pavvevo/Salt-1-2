@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://csca3k5nod8ij"]
+[gd_scene load_steps=7 format=3 uid="uid://csca3k5nod8ij"]
 
 [ext_resource type="Material" uid="uid://borbkfvgstxmv" path="res://materials/Water.tres" id="1_vt7ts"]
 
@@ -64,39 +64,94 @@ func get_height(world_position: Vector3) -> float:
 	return global_position.y + final_noise * height_scale;
 "
 
-[sub_resource type="PlaneMesh" id="PlaneMesh_e47xl"]
-size = Vector2(950, 2000)
+[sub_resource type="PlaneMesh" id="PlaneMesh_7ih7u"]
+size = Vector2(100, 100)
+subdivide_width = 24
+subdivide_depth = 24
 
-[sub_resource type="PlaneMesh" id="PlaneMesh_tsmlt"]
-size = Vector2(100, 950)
+[sub_resource type="PlaneMesh" id="PlaneMesh_t0bqm"]
+size = Vector2(2300, 1000)
 
-[sub_resource type="PlaneMesh" id="PlaneMesh_517uy"]
-size = Vector2(950, 2000)
-
-[sub_resource type="PlaneMesh" id="PlaneMesh_got12"]
-size = Vector2(100, 950)
+[sub_resource type="PlaneMesh" id="PlaneMesh_bfhoy"]
+size = Vector2(1000, 300)
 
 [node name="Water" type="MeshInstance3D"]
 mesh = SubResource("PlaneMesh_6l2m6")
 surface_material_override/0 = ExtResource("1_vt7ts")
 script = SubResource("GDScript_1jtx5")
 
-[node name="LowRes1" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -525, 0, 0)
-mesh = SubResource("PlaneMesh_e47xl")
+[node name="InnerLOD" type="Node3D" parent="."]
+
+[node name="InnerLOD1" type="MeshInstance3D" parent="InnerLOD"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -100, 0, 0)
+mesh = SubResource("PlaneMesh_7ih7u")
+skeleton = NodePath("../..")
 surface_material_override/0 = ExtResource("1_vt7ts")
 
-[node name="LowRes4" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 525)
-mesh = SubResource("PlaneMesh_tsmlt")
+[node name="InnerLOD4" type="MeshInstance3D" parent="InnerLOD"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 100, 0, 0)
+mesh = SubResource("PlaneMesh_7ih7u")
+skeleton = NodePath("../..")
 surface_material_override/0 = ExtResource("1_vt7ts")
 
-[node name="LowRes6" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 525, 0, 0)
-mesh = SubResource("PlaneMesh_517uy")
+[node name="InnerLOD2" type="MeshInstance3D" parent="InnerLOD"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -100)
+mesh = SubResource("PlaneMesh_7ih7u")
+skeleton = NodePath("../..")
 surface_material_override/0 = ExtResource("1_vt7ts")
 
-[node name="LowRes8" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -525)
-mesh = SubResource("PlaneMesh_got12")
+[node name="InnerLOD3" type="MeshInstance3D" parent="InnerLOD"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 100)
+mesh = SubResource("PlaneMesh_7ih7u")
+skeleton = NodePath("../..")
+surface_material_override/0 = ExtResource("1_vt7ts")
+
+[node name="InnerLOD5" type="MeshInstance3D" parent="InnerLOD"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 100, 0, 100)
+mesh = SubResource("PlaneMesh_7ih7u")
+skeleton = NodePath("../..")
+surface_material_override/0 = ExtResource("1_vt7ts")
+
+[node name="InnerLOD6" type="MeshInstance3D" parent="InnerLOD"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -100, 0, 100)
+mesh = SubResource("PlaneMesh_7ih7u")
+skeleton = NodePath("../..")
+surface_material_override/0 = ExtResource("1_vt7ts")
+
+[node name="InnerLOD7" type="MeshInstance3D" parent="InnerLOD"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -100, 0, -100)
+mesh = SubResource("PlaneMesh_7ih7u")
+skeleton = NodePath("../..")
+surface_material_override/0 = ExtResource("1_vt7ts")
+
+[node name="InnerLOD8" type="MeshInstance3D" parent="InnerLOD"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 100, 0, -100)
+mesh = SubResource("PlaneMesh_7ih7u")
+skeleton = NodePath("../..")
+surface_material_override/0 = ExtResource("1_vt7ts")
+
+[node name="OuterLod" type="Node3D" parent="."]
+
+[node name="OuterLOD1" type="MeshInstance3D" parent="OuterLod"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 650)
+mesh = SubResource("PlaneMesh_t0bqm")
+skeleton = NodePath("../..")
+surface_material_override/0 = ExtResource("1_vt7ts")
+
+[node name="OuterLOD3" type="MeshInstance3D" parent="OuterLod"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 650, 0, 0)
+mesh = SubResource("PlaneMesh_bfhoy")
+skeleton = NodePath("../..")
+surface_material_override/0 = ExtResource("1_vt7ts")
+
+[node name="OuterLOD4" type="MeshInstance3D" parent="OuterLod"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -650, 0, 0)
+mesh = SubResource("PlaneMesh_bfhoy")
+skeleton = NodePath("../..")
+surface_material_override/0 = ExtResource("1_vt7ts")
+
+[node name="OuterLOD2" type="MeshInstance3D" parent="OuterLod"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -650)
+mesh = SubResource("PlaneMesh_t0bqm")
+skeleton = NodePath("../..")
 surface_material_override/0 = ExtResource("1_vt7ts")
