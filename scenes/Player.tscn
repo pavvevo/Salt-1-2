@@ -1,6 +1,11 @@
 [gd_scene load_steps=28 format=3 uid="uid://cbfmat004qsnw"]
 
 [ext_resource type="Script" path="res://scripts/Player.gd" id="1_ohnqo"]
+[ext_resource type="PackedScene" uid="uid://dqocwgprmydlx" path="res://scenes/Splash.tscn" id="2_ceqaa"]
+[ext_resource type="Texture2D" uid="uid://hmw6anavhfad" path="res://textures/cursor.png" id="2_d16le"]
+[ext_resource type="Script" path="res://scripts/Interact.gd" id="3_5m316"]
+[ext_resource type="Texture2D" uid="uid://xhi3ijqi0nxn" path="res://textures/hand.png" id="4_kmltt"]
+[ext_resource type="Shader" path="res://scenes/Fuck.gdshader" id="5_h0nyf"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ffv8i"]
 

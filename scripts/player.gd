@@ -20,6 +20,7 @@ extends CharacterBody3D
 var drive = false
 
 var can_move = true
+var can_look = true
 const walk_speed = 7.0
 const run_speed = 10.0
 const crouch_speed = 5.0
@@ -28,7 +29,7 @@ var ground_friction = 30
 var air_friction = 10
 
 var move_speed = 5.0
-const jump_power = 4
+const jump_power = 6
 var lerp_speed = 5.0
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 var onground = 0

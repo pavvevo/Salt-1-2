@@ -107,3 +107,5 @@ func change_drive():
 		player.reparent(self)
 	else:
 		player.reparent(get_tree().get_root())
+		player.rotation.x = 0.0
+		player.rotation.z = 0.0
