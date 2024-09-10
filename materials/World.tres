@@ -1,0 +1,22 @@
+[gd_resource type="ShaderMaterial" load_steps=7 format=3 uid="uid://cxvgn3lv0ouqv"]
+
+[ext_resource type="Shader" path="res://scenes/World.gdshader" id="1_7rj16"]
+[ext_resource type="Texture2D" uid="uid://b5h06eb722n0n" path="res://textures/floor_sand.png" id="2_467ty"]
+[ext_resource type="Texture2D" uid="uid://clmq100544ykx" path="res://textures/sand.png" id="2_jt2pa"]
+[ext_resource type="Texture2D" uid="uid://bywp035u23u1s" path="res://textures/grass.png" id="3_o0upy"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_78g86"]
+seed = 1356336175
+fractal_octaves = 6
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_y8xem"]
+noise = SubResource("FastNoiseLite_78g86")
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_7rj16")
+shader_parameter/noise_scale = 1.0
+shader_parameter/noiseTex = SubResource("NoiseTexture2D_y8xem")
+shader_parameter/floorTex = ExtResource("2_467ty")
+shader_parameter/sandTex = ExtResource("2_jt2pa")
+shader_parameter/grassTex = ExtResource("3_o0upy")

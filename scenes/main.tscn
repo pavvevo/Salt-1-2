@@ -3,9 +3,9 @@
 [ext_resource type="Texture2D" uid="uid://vqqktg2dnxv" path="res://assets/hdris/AllSkyFree_Sky_EpicBlueSunset_Equirect.png" id="1_baa6l"]
 [ext_resource type="Material" uid="uid://bmnh3le06h5vc" path="res://materials/Wood.tres" id="2_53jsq"]
 [ext_resource type="PackedScene" uid="uid://cbfmat004qsnw" path="res://scenes/Player.tscn" id="3_3uj76"]
-[ext_resource type="Material" uid="uid://8d8hecebu3ys" path="res://materials/Sand.tres" id="3_8tmep"]
 [ext_resource type="PackedScene" uid="uid://csca3k5nod8ij" path="res://scenes/Water.tscn" id="4_snvwm"]
 [ext_resource type="PackedScene" uid="uid://bkbocnsmrfpyl" path="res://scenes/Ship.tscn" id="5_1fqkb"]
+[ext_resource type="PackedScene" uid="uid://btsxm4iq0ka1f" path="res://scenes/World.tscn" id="7_mnc4y"]
 
 [sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_dhnrm"]
 panorama = ExtResource("1_baa6l")
@@ -60,12 +60,6 @@ material_override = ExtResource("2_53jsq")
 use_collision = true
 size = Vector3(7, 6, 7)
 
-[node name="Ground" type="CSGBox3D" parent="World"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -8, 0)
-material_override = ExtResource("3_8tmep")
-use_collision = true
-size = Vector3(10000, 1, 10000)
-
 [node name="Water" parent="." instance=ExtResource("4_snvwm")]
 
 [node name="Player" parent="." instance=ExtResource("3_3uj76")]
@@ -79,3 +73,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -33.6094, 2.8, 0)
 
 [node name="Ship3" parent="." instance=ExtResource("5_1fqkb")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.3199, 2.8, 43.7346)
+
+[node name="World2" parent="." instance=ExtResource("7_mnc4y")]
+transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 62.9, -32.3013, -154.76)

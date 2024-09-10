@@ -4,8 +4,8 @@
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_6l2m6"]
 size = Vector2(100, 100)
-subdivide_width = 99
-subdivide_depth = 99
+subdivide_width = 199
+subdivide_depth = 199
 
 [sub_resource type="GDScript" id="GDScript_1jtx5"]
 resource_name = "Water"
